@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button, Icon, Header, Form, Message} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';

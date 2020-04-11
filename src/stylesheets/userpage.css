@@ -1,0 +1,32 @@
+.header{
+    margin: 3em;
+    display: flex;
+    justify-content: space-evenly;
+}
+.header img{
+    max-width: 300px;
+    max-height: 300px;
+}
+.header .text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.gallery{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.gallery img{
+    margin: 10px;
+}
+
+.buttons{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

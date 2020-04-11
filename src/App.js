@@ -6,6 +6,9 @@ import Home from './components/Home';
 import Login from './components/Login';
 import MakeAccount from './components/MakeAccount';
 import MainPage from './components/MainPage';
+import UserPage from './components/Profiles/UserPage';
+import UserPage2 from './components/Profiles/UserPage2';
+import UserPage3 from './components/Profiles/UserPage3';
 
 const Wrapper = styled('div')`
   background: white;
@@ -27,6 +30,9 @@ function App() {
             <Route exact path="/login" component={Login} />
             <Route exact path="/makeaccount" component={MakeAccount} />
             <Route exact path="/mainpage" component={MainPage} />
+            <Route exact path="/elliot-baker" component={UserPage} />
+            <Route exact path="/rachel-brown" component={UserPage2} />
+            <Route exact path="/michael-rosé" component={UserPage3} />
           </Switch>
         </Layout>
       </HashRouter>
