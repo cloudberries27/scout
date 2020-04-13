@@ -34,14 +34,23 @@ export default class Login extends React.Component {
     super(props);
     autoBind(this);
     this.state ={
+      username: '',
+      password: '',
+      email: '',
+      first_name:'',
+      last_name:'',
+      gender:'',
+      type:'',
+      experience:'',
       show: false
     };
 
   }
 
-  handleChange = (e, { value }) => this.setState({ value })
-  handleSubmit() {
-    this.setState({show:true});
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+
+  handleSubmit = () => {
+    console.log(this.state.username, this.state.email, this.state.gender);
   }
 
   componentDidMount() {
@@ -75,42 +84,54 @@ export default class Login extends React.Component {
           display: 'flex',
           justifyContent: 'center'
         }}>
-        <Form>
+        <Form onSubmit={(e) => this.handleSubmit(e)}>
         <Form.Group>
         <Form.Field
           control={Input}
           label='Username'
+          name = 'username'
           placeholder='Username'
+          onChange={this.handleChange}
         />
         <Form.Field
           control={Input}
-          label='Password'
+          label=' Password'
+          name='password'
           placeholder='Password'
+          onChange={this.handleChange}
         />
         <Form.Field
           control={Input}
           label='Email'
+          name='email'
           placeholder='Email'
+          onChange={this.handleChange}
         />
         </Form.Group>
         <Form.Group widths='equal'>
           <Form.Field
             control={Input}
             label='First name'
+            name='first_name'
             placeholder='First name'
+            onChange={this.handleChange}
           />
           <Form.Field
             control={Input}
             label='Last name'
+            name='last_name'
             placeholder='Last name'
+            onChange={this.handleChange}
           />
 
 
           <Form.Field
             control={Select}
             label='Gender'
+            name='gender'
             options={options}
             placeholder='Gender'
+            onChange={this.handleChange}
           />
 
 
@@ -123,11 +144,13 @@ export default class Login extends React.Component {
             label='I want to be discovered'
             value='1'
             checked={value === '1'}
+            name='type'
             onChange={this.handleChange}
           />
           <Form.Field
             control={Radio}
             label='I want to discover'
+            name='type'
             value='2'
             checked={value === '2'}
             onChange={this.handleChange}
@@ -136,13 +159,16 @@ export default class Login extends React.Component {
         <Form.Field
           control={TextArea}
           label='About you'
+          name='experience'
           placeholder='Tell us about your experience...'
+          onChange={this.handleChange}
         />
         <Form.Field
           control={Checkbox}
           label='I agree to the Terms and Conditions'
+          onChange={this.handleChange}
         />
-        <Form.Field control={Button} onClick={this.handleSubmit}>Submit</Form.Field>
+        <Button type='submit' >Submit</Button>
       </Form>
         </div>
         {this.state.show &&
