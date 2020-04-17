@@ -1,14 +1,31 @@
 import React from 'react';
-import { Button, Icon, Header, Form, Message} from 'semantic-ui-react';
+import { Button, Icon, Input, Header, Form, Message} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import { withRouter } from 'react-router-dom';
+import * as firebase from 'firebase';
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     autoBind(this);
+    this.state ={
+      email: '',
+      password: ''
+    };
+  }
 
+  handleSubmit = () => {
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+      var errorMessage = error.message;
+      if (errorMessage != null) {
+        alert(errorMessage);
+        return;
+      }
+      else {
+        this.props.history.push('/mainpage');
+      }
+      });
   }
 
   componentDidMount() {
@@ -18,9 +35,9 @@ class Login extends React.Component {
   componentWillUnmount() {
 
   }
-  handleClick(){
-    this.props.history.push('/mainpage');
-  }
+
+  handleChange = (e, { name, value }) => this.setState({ [name]: value });
+
   setRedirect = () => {
     console.log("hello>");
     return <Link to="/login" />
@@ -48,18 +65,22 @@ class Login extends React.Component {
           justifyContent: 'center'
         }}>
         <Form >
-          <Form.Field>
-            <label>Username</label>
-            <input placeholder='Username' />
-          </Form.Field>
-          <Form.Field>
-            <label>Password</label>
-            <input placeholder='Password' />
-          </Form.Field>
+          <Form.Field
+            control={Input}
+            label=' Password'
+            name='password'
+            placeholder='Password'
+            onChange={this.handleChange}
+          />
+          <Form.Field
+            control={Input}
+            label='Email'
+            name='email'
+            placeholder='Email'
+            onChange={this.handleChange}
+          />
 
-
-
-          <Button type='submit'  onClick={this.handleClick} style= {{marginLeft: 55}} >Login</Button>
+          <Button type='submit'  onClick={this.handleSubmit} style= {{marginLeft: 55}} >Login</Button>
         </Form>
         </div>
 

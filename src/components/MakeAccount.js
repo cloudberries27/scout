@@ -15,21 +15,6 @@ import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import * as firebase from 'firebase';
 
-// scout's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyDPwe1ORI1Orf3A3dNY9NPzZEDmbMc1Va4",
-    authDomain: "scout-32fb7.firebaseapp.com",
-    databaseURL: "https://scout-32fb7.firebaseio.com",
-    projectId: "scout-32fb7",
-    storageBucket: "scout-32fb7.appspot.com",
-    messagingSenderId: "1049255843674",
-    appId: "1:1049255843674:web:5538988d4fd902c74e0563",
-    measurementId: "G-92FDWSF58L"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();  //firebase authentication
-
 const options = [
   { key: 'm', text: 'Male', value: 'male' },
   { key: 'f', text: 'Female', value: 'female' },
@@ -45,6 +30,11 @@ const FormExampleSuccess = () => (
   <Link to='/login'>Log in</Link>
 </Form>
 )
+const MessageNegative = () => (
+<Message negative>
+  <Message.Header>Please accept the terms and conditions</Message.Header>
+</Message>
+)
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -58,14 +48,22 @@ export default class Login extends React.Component {
       gender:'',
       type:'',
       experience:'',
+      agreement: false,
       show: false
     };
 
   }
+  toggle = () => this.setState((prevState) => ({ agreement: !prevState.agreement }))
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
   handleSubmit = () => {
+    if(!this.state.agreement)
+    {
+      MessageNegative();
+      return
+  }
+
   auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
   // Handle Errors here.
   var errorMessage = error.message;
@@ -77,7 +75,7 @@ export default class Login extends React.Component {
     alert("Successfully signed up!");
   }
   });
-
+  //needs to be changed so that its users + this.state.email
     firebase.database().ref('users/' + this.state.username).set({  //store user data
       email: this.state.email,
       first_name: this.state.first_name,
@@ -103,7 +101,7 @@ export default class Login extends React.Component {
     return (
       <div id="wrapper"
       style = {{
-        marginTop: 200
+        marginTop: 100
       }}>
         <div id="up" >
         <div>
@@ -116,7 +114,7 @@ export default class Login extends React.Component {
         </div>
         <div className="form-group">
         <div id="down" style = {{
-          marginTop: 30,
+          marginTop: 50,
           display: 'flex',
           justifyContent: 'center'
         }}>
@@ -202,7 +200,7 @@ export default class Login extends React.Component {
         <Form.Field
           control={Checkbox}
           label='I agree to the Terms and Conditions'
-          onChange={this.handleChange}
+          onChange={this.toggle}
         />
         <Button type='submit' >Submit</Button>
       </Form>
