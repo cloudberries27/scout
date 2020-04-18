@@ -1,5 +1,8 @@
 import * as firebase from 'firebase';
 
+
+
+
 // scout's Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDPwe1ORI1Orf3A3dNY9NPzZEDmbMc1Va4",

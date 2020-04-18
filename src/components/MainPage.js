@@ -6,8 +6,9 @@ import picture from '../images/artist1.jpg';
 import picture2 from '../images/artist2.png';
 import picture3 from '../images/artist3.jpg';
 import autoBind from 'react-autobind';
-
+import {auth} from '../config'
 class ModalExampleControlled extends Component {
+
   state = { modalOpen: false }
 
   handleOpen = () => this.setState({ modalOpen: true })
@@ -44,7 +45,17 @@ class MainPage extends React.Component {
     super(props);
     autoBind(this);
   }
+  submitFunction = () => {
+    auth.signOut().then(() => {
+      this.props.history.push('Login')
 
+  // Sign-out successful.
+  }).catch(function(error) {
+    alert(error.message)
+    console.log("fail");
+  // An error happened.
+  });
+  }
   componentDidMount() {
 
   }
@@ -56,9 +67,12 @@ class MainPage extends React.Component {
     console.log("hello?");
     this.props.history.push('/login');
   }
+
   handleClick() {
 
   }
+
+
 
   render() {
     const extra = (
@@ -68,6 +82,8 @@ class MainPage extends React.Component {
       <div id="wrapper">
         <div id="up" >
         <Header_app />
+
+        <Button type='submit' onClick={this.submitFunction}>Temp Sign Out</Button> {/* I created a temp sign out button, to handle authentication */}
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,

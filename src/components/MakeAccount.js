@@ -13,7 +13,7 @@ import {
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
-import * as firebase from '../config'
+import * as firebase from '../config';
 
 
 
@@ -37,6 +37,7 @@ const MessageNegative = () => (
   <Message.Header>Please accept the terms and conditions</Message.Header>
 </Message>
 )
+
 export default class Login extends React.Component {
   constructor(props) {
     super(props);

@@ -3,7 +3,7 @@ import { Button, Icon, Input, Header, Form, Message} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import { withRouter } from 'react-router-dom';
-import * as firebase from '../config'
+import {auth} from '../config'
 
 class Login extends React.Component {
   constructor(props) {
@@ -16,17 +16,22 @@ class Login extends React.Component {
   }
 
   handleSubmit = () => {
-    firebase.auth.signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+
+    auth.signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
       var errorMessage = error.message;
+      console.log(errorMessage);
       if (errorMessage != null) {
         alert(errorMessage);
         return;
       }
       else {
-        this.props.history.push('/mainpage');
+        alert("hello");
+        console.log("hello")
       }
       });
+
   }
+
 
   componentDidMount() {
 
@@ -44,6 +49,17 @@ class Login extends React.Component {
   }
 
   render() {
+    auth.onAuthStateChanged(user => {
+          console.log(user);
+          if (user) {
+            // alert('success sign in');
+            this.props.history.push('/mainpage');
+          }
+          else {
+            console.log('signed out');
+            //this.props.history.push('/');
+          }
+      });
     return (
       <div id="wrapper"
       style = {{
@@ -67,16 +83,17 @@ class Login extends React.Component {
         <Form >
           <Form.Field
             control={Input}
-            label=' Password'
-            name='password'
-            placeholder='Password'
+            label='Email'
+            name='email'
+            placeholder='Email'
             onChange={this.handleChange}
           />
           <Form.Field
             control={Input}
-            label='Email'
-            name='email'
-            placeholder='Email'
+            label=' Password'
+            name='password'
+            placeholder='Password'
+
             onChange={this.handleChange}
           />
 
