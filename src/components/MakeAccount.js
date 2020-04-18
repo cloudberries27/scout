@@ -13,7 +13,9 @@ import {
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
-import * as firebase from 'firebase';
+import * as firebase from '../config'
+
+
 
 const options = [
   { key: 'm', text: 'Male', value: 'male' },
@@ -64,7 +66,7 @@ export default class Login extends React.Component {
       return
   }
 
-  auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
+  firebase.auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
   // Handle Errors here.
   var errorMessage = error.message;
   if (errorMessage != null) {
@@ -76,7 +78,7 @@ export default class Login extends React.Component {
   }
   });
   //needs to be changed so that its users + this.state.email
-    firebase.database().ref('users/' + this.state.username).set({  //store user data
+    firebase.db.ref('users/' + this.state.username).set({  //store user data
       email: this.state.email,
       first_name: this.state.first_name,
       last_name:this.state.last_name,

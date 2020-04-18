@@ -3,7 +3,7 @@ import { Button, Icon, Input, Header, Form, Message} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import { withRouter } from 'react-router-dom';
-import * as firebase from 'firebase';
+import * as firebase from '../config'
 
 class Login extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class Login extends React.Component {
   }
 
   handleSubmit = () => {
-    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+    firebase.auth.signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
       var errorMessage = error.message;
       if (errorMessage != null) {
         alert(errorMessage);
