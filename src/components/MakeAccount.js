@@ -51,16 +51,23 @@ export default class Login extends React.Component {
 
   handleBlur = (field) => (evt) => {this.setState({ touched: { ...this.state.touched, [field]: true }, }); }
 
-  handleSubmit = () => {
+  test = () => console.log("test");
+
+  async handleSubmit() {
     var uniqueUsername = true;
     var tempname = this.state.username;
-    firebase.db.ref().child('users').on("child_added", function(snapshot, prevChildKey) {
-      var user = snapshot.val();
-      if(tempname === user.username)
-      {
-        uniqueUsername = false;
-      }
+
+    const userRef = firebase.db.ref().child('users');
+    await userRef.once('value', function(data) {
+      data.forEach(function(child){
+        var user = child.val();
+        if(user.username === tempname)
+        {
+          uniqueUsername = false;
+        }
+      });
     });
+
     if(!uniqueUsername)
     {
         this.setState({usernameError: "That username is taken, please enter a valid username"});
@@ -69,8 +76,8 @@ export default class Login extends React.Component {
         return;
     }
     else {
+      console.log("FUCK ME");
       firebase.auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
-      // Handle Errors here.
       var errorMessage = error.message;
       if (errorMessage != null) {
         alert(errorMessage);
@@ -80,7 +87,6 @@ export default class Login extends React.Component {
         alert("Successfully signed up!");
       }
       });
-      //needs to be changed so that its users + this.state.email
         firebase.db.ref('users/' + this.state.username).set({  //store user data
           username: this.state.username,
           email: this.state.email,
@@ -90,7 +96,6 @@ export default class Login extends React.Component {
           type:this.state.type,
           experience:this.state.experience
          });
-        //console.log(this.state.username, this.state.email, this.state.gender);
     }
   }
 
