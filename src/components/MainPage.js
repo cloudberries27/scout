@@ -1,12 +1,15 @@
-import React, { Component } from 'react';
-import Header_app from '../Header';
-import { Button, Icon, Card, Modal, Header } from 'semantic-ui-react';
+import React, { Component} from 'react';
+import HeaderApp from '../Header';
+import { Button, Icon, Card, Modal, Header} from 'semantic-ui-react';
 import { withRouter, Link } from 'react-router-dom';
 import picture from '../images/artist1.jpg';
 import picture2 from '../images/artist2.png';
 import picture3 from '../images/artist3.jpg';
 import autoBind from 'react-autobind';
-import {auth} from '../config'
+import {auth, db} from '../config'
+
+import SearchBar from './Search';
+
 class ModalExampleControlled extends Component {
 
   state = { modalOpen: false }
@@ -40,6 +43,7 @@ class ModalExampleControlled extends Component {
     )
   }
 }
+
 class MainPage extends React.Component {
   constructor(props) {
     super(props);
@@ -56,6 +60,7 @@ class MainPage extends React.Component {
   // An error happened.
   });
   }
+
   componentDidMount() {
 
   }
@@ -63,6 +68,7 @@ class MainPage extends React.Component {
   componentWillUnmount() {
 
   }
+
   setRedirect = () => {
     console.log("hello?");
     this.props.history.push('/login');
@@ -71,9 +77,15 @@ class MainPage extends React.Component {
   handleClick() {
 
   }
-
-
-
+  searchFunction(event){
+    //prevents the page from re-loading
+    event.preventDefault();
+    //input of search box
+    let name = event.currentTarget.searchValue.value; 
+    db.ref('users').orderByKey().startAt(name).on("child_added", function(snapshot) {
+      console.log(snapshot.key);
+    });
+  }
   render() {
     const extra = (
       <ModalExampleControlled />
@@ -81,9 +93,15 @@ class MainPage extends React.Component {
     return (
       <div id="wrapper">
         <div id="up" >
-        <Header_app />
-
-        <Button type='submit' onClick={this.submitFunction}>Temp Sign Out</Button> {/* I created a temp sign out button, to handle authentication */}
+          <div className='right' container style = {{
+            marginTop: 30,
+            display: 'flex',
+            placeContent: 'end space-between'
+          }}>
+            <SearchBar submitFunction = {this.searchFunction}/>
+            <Button type='submit' onClick={this.submitFunction}>Log Out</Button> {/* I created a temp sign out button, to handle authentication */}
+          </div>
+          <HeaderApp />
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,
