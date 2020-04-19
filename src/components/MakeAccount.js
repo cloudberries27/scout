@@ -1,16 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import {
-  Button,
-  Checkbox,
-  Header,
-  Icon,
-  Form,
-  Input,
-  Radio,
-  Select,
-  TextArea,
-  Message
-} from 'semantic-ui-react'
+import React, { Fragment } from 'react';
+import { Header, Form, Icon } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import * as firebase from '../config';
@@ -51,6 +40,8 @@ export default class Login extends React.Component {
     password: this.state.password.length === 0,
     first_name: this.state.first_name.length === 0,
     last_name: this.state.last_name.length === 0,
+    gender: this.state.gender.length === 0,
+    type: this.state.type.length === 0,
     agreement: !this.state.agreement
   }
   return errors;
@@ -61,44 +52,46 @@ export default class Login extends React.Component {
   handleBlur = (field) => (evt) => {this.setState({ touched: { ...this.state.touched, [field]: true }, }); }
 
   handleSubmit = () => {
-    var uniqueUsername = true
-    // firebase.db.ref().child('users').on("child_added", function(snapshot, prevChildKey) {
-    //   var user = snapshot.val();
-    //   if (this.state.username === user.username)
-    //   {
-    //     uniqueUsername = false;
-    //   }
-    // });
+    var uniqueUsername = true;
+    var tempname = this.state.username;
+    firebase.db.ref().child('users').on("child_added", function(snapshot, prevChildKey) {
+      var user = snapshot.val();
+      if(tempname === user.username)
+      {
+        uniqueUsername = false;
+      }
+    });
     if(!uniqueUsername)
     {
-        this.state.usernameError = "That username is taken, please enter a valid username";
+        this.setState({usernameError: "That username is taken, please enter a valid username"});
         this.setState({ username: ""});
         this.validate();
         return;
     }
-
-  firebase.auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
-  // Handle Errors here.
-  var errorMessage = error.message;
-  if (errorMessage != null) {
-    alert(errorMessage);
-    return;
-  }
-  else {
-    alert("Successfully signed up!");
-  }
-  });
-  //needs to be changed so that its users + this.state.email
-    firebase.db.ref('users/' + this.state.username).set({  //store user data
-      username: this.state.username,
-      email: this.state.email,
-      first_name: this.state.first_name,
-      last_name:this.state.last_name,
-      gender:this.state.gender,
-      type:this.state.type,
-      experience:this.state.experience
-     });
-    //console.log(this.state.username, this.state.email, this.state.gender);
+    else {
+      firebase.auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
+      // Handle Errors here.
+      var errorMessage = error.message;
+      if (errorMessage != null) {
+        alert(errorMessage);
+        return;
+      }
+      else {
+        alert("Successfully signed up!");
+      }
+      });
+      //needs to be changed so that its users + this.state.email
+        firebase.db.ref('users/' + this.state.username).set({  //store user data
+          username: this.state.username,
+          email: this.state.email,
+          first_name: this.state.first_name,
+          last_name:this.state.last_name,
+          gender:this.state.gender,
+          type:this.state.type,
+          experience:this.state.experience
+         });
+        //console.log(this.state.username, this.state.email, this.state.gender);
+    }
   }
 
   componentDidMount() {
@@ -117,15 +110,6 @@ export default class Login extends React.Component {
 
   render() {
 
-    firebase.db.ref().child('users').on("child_added", function(snapshot, prevChildKey) {
-      var user = snapshot.val();
-      console.log(user);
-      if(user.username != this.state.username)
-      {
-        console.log("Fuck");
-      }
-    });
-
     const errors = this.validate();
     const isDisabled = Object.keys(errors).some(x => errors[x]);
 
@@ -135,8 +119,6 @@ export default class Login extends React.Component {
       return hasError ? shouldShow : false;
     };
 
-
-    const { value } = this.state
     return (
       <Fragment>
       <div id="wrapper" style = {{ marginTop: 100}}>
@@ -167,7 +149,7 @@ export default class Login extends React.Component {
                   placeholder='Password'
                   onBlur={this.handleBlur("password")}
                   onChange={this.handleChange.bind(this)}
-                  error={shouldMarkError('password') && { content: 'Please enter a password', pointing: 'below' }}
+                  error={shouldMarkError('password') && { content: 'Please enter a password', pointing: 'above' }}
                 />
                 <Form.Input
                   label='Email'
@@ -175,7 +157,7 @@ export default class Login extends React.Component {
                   placeholder='Email'
                   onBlur={this.handleBlur("email")}
                   onChange={this.handleChange.bind(this)}
-                  error={shouldMarkError('email') && { content: 'Please enter your email', pointing: 'below' }}
+                  error={shouldMarkError('email') && { content: 'Please enter your email', pointing: 'above' }}
                 />
               </Form.Group>
               <Form.Group widths='equal'>
@@ -185,7 +167,7 @@ export default class Login extends React.Component {
                   placeholder='First name'
                   onBlur={this.handleBlur("first_name")}
                   onChange={this.handleChange.bind(this)}
-                  error={shouldMarkError('first_name') && { content: 'Please enter your first name', pointing: 'below' }}
+                  error={shouldMarkError('first_name') && { content: 'Please enter your first name', pointing: 'above' }}
                 />
                 <Form.Input
                   fluid label='Last name'
@@ -193,8 +175,10 @@ export default class Login extends React.Component {
                   name = 'last_name'
                   onBlur={this.handleBlur("last_name")}
                   onChange={this.handleChange.bind(this)}
-                  error={shouldMarkError('last_name') && { content: 'Please enter your last name', pointing: 'below'}}
+                  error={shouldMarkError('last_name') && { content: 'Please enter your last name', pointing: 'above'}}
                 />
+              </Form.Group>
+              <Form.Group widths='equal'>
                 <Form.Select
                   label='Gender'
                   options={ [
@@ -204,25 +188,18 @@ export default class Login extends React.Component {
                     ]}
                   placeholder='Gender'
                   name='gender'
-                  onBlur={this.handleBlur("gender")}
                   onChange={this.handleChange.bind(this)}
-                  error={shouldMarkError('gender') && { content: 'Please select a gender', pointing: 'below'}}
+                  error={shouldMarkError('gender') && { content: 'Please select a gender', pointing: 'above'}}
                 />
-              </Form.Group>
-              <Form.Group inline>
-                <label>Size</label>
-                <Form.Radio
-                  label='I want to be discovered'
+                <Form.Select
+                  label='Goal'
+                  options={ [
+                    { key: '1', text: 'I want to be discovered', value: '1' },
+                    { key: '2', text: 'I want to discover', value: '2' },
+                    { key: '3', text: 'I want to discover and be discovered', value: '3'}
+                  ]}
+                  placeholder='What are you looking for?'
                   name='type'
-                  value='1'
-                  checked={value === '1'}
-                  onChange={this.handleChange.bind(this)}
-                />
-                <Form.Radio
-                  label='I want to discover'
-                  name='type'
-                  value='2'
-                  checked={value === '2'}
                   onChange={this.handleChange.bind(this)}
                 />
               </Form.Group>
