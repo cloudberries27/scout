@@ -18,6 +18,7 @@ import * as firebase from 'firebase';
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.database();
+  const storage = firebase.storage();
 
 
   // class Firebase{
@@ -28,7 +29,7 @@ import * as firebase from 'firebase';
   //   }
   // }
 
-export {auth, db, firebase}
+export {auth, db, storage, firebase}
 
   // Initialize Firebase
   // firebase.initializeApp(firebaseConfig);

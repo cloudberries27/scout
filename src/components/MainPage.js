@@ -6,7 +6,7 @@ import picture from '../images/artist1.jpg';
 import picture2 from '../images/artist2.png';
 import picture3 from '../images/artist3.jpg';
 import autoBind from 'react-autobind';
-import {auth, db} from '../config'
+import {auth, db, storage} from '../config'
 
 import SearchBar from './Search';
 
@@ -48,6 +48,7 @@ class MainPage extends React.Component {
   constructor(props) {
     super(props);
     autoBind(this);
+
   }
   submitFunction = () => {
     auth.signOut().then(() => {
@@ -62,8 +63,28 @@ class MainPage extends React.Component {
   }
 
   componentDidMount() {
+    var uploader = document.getElementById('uploader');
+    var fileButton = document.getElementById('fileButton');
+    fileButton.addEventListener('change',function(e) {
+      var file = e.target.files[0];
+      console.log(file);
+      var storageRef = storage.ref('files/'+file.name); //create storageRef
+      var task = storageRef.put(file); //upload file
+      //update progress bar
+      task.on('state_changed',
+        function progress(snapshot){
+          var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          uploader.value = percentage;
+        },
+        function error(err){
 
-  }
+        },
+        function complete(){
+
+        });
+  });
+}
+
 
   componentWillUnmount() {
 
@@ -95,7 +116,10 @@ class MainPage extends React.Component {
       }
     });
   }
+
+
   render() {
+
     const extra = (
       <ModalExampleControlled />
     )
@@ -108,15 +132,20 @@ class MainPage extends React.Component {
             placeContent: 'end space-between'
           }}>
             <SearchBar submitFunction = {this.searchFunction}/>
-            <Button type='submit' onClick={this.submitFunction}>Log Out</Button> {/* I created a temp sign out button, to handle authentication */}
+            <Button type='submit' onClick={this.submitFunction}>Log Out</Button>
           </div>
           <HeaderApp />
+          <progress value="0" max ="100" id="uploader">0%</progress>
+          <text>this is temporary(for testing)</text>
+          <input type="file" name='fileUploaded' id="fileButton"/>
+          {/* <Button type='submit' onClick={this.uploadFunction}>Upload</Button>*/}
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,
           display: 'flex',
           justifyContent: 'center'
         }} >
+
         <Link to='/elliot-baker'>
         <Card
           image={picture}

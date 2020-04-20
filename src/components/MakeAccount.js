@@ -76,7 +76,7 @@ export default class Login extends React.Component {
         return;
     }
     else {
-      console.log("FUCK ME");
+
       firebase.auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
       var errorMessage = error.message;
       if (errorMessage != null) {
