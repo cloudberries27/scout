@@ -81,9 +81,18 @@ class MainPage extends React.Component {
     //prevents the page from re-loading
     event.preventDefault();
     //input of search box
-    let name = event.currentTarget.searchValue.value; 
-    db.ref('users').orderByKey().startAt(name).on("child_added", function(snapshot) {
-      console.log(snapshot.key);
+    let name = event.currentTarget.searchValue.value;
+
+    db.ref('users/'+name).on('value',function(snapshot) {
+      var username = snapshot.val();
+      console.log(username);
+      if (username == null){  //user not found
+        alert("User does not exist!");
+      }
+      else {  //user found
+        alert("User found");
+        //will set up a link to direct individual to porfolio
+      }
     });
   }
   render() {
