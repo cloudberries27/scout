@@ -12,7 +12,7 @@ import SearchBar from './Search';
 
 class ModalExampleControlled extends Component {
 
-  state = { modalOpen: false }
+  state = { modalOpen: false}
 
   handleOpen = () => this.setState({ modalOpen: true })
 
@@ -62,28 +62,48 @@ class MainPage extends React.Component {
   });
   }
 
-  componentDidMount() {
+  uploadFunction = () => {
+    console.log('test');
     var uploader = document.getElementById('uploader');
+    console.log(uploader.value);
     var fileButton = document.getElementById('fileButton');
-    fileButton.addEventListener('change',function(e) {
-      var file = e.target.files[0];
-      console.log(file);
-      var storageRef = storage.ref('files/'+file.name); //create storageRef
-      var task = storageRef.put(file); //upload file
-      //update progress bar
-      task.on('state_changed',
-        function progress(snapshot){
-          var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          uploader.value = percentage;
-        },
-        function error(err){
+    var file = fileButton.files[0];
+    console.log(file);
+    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
+    var task = storageRef.put(file); //upload file
+    //update progress bar
+    task.on('state_changed',
+      function progress(snapshot){
+        var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        uploader.value = percentage;
+      },
+      function error(err){
 
-        },
-        function complete(){
+      },
+      function complete(){
+            // Create a reference to the file we want to download
 
-        });
-  });
-}
+      }); //hi
+  }
+
+  async downloadFunction() {
+    var image = document.getElementById('showPhoto');
+    var fileButton = document.getElementById('fileButton');
+    var file = fileButton.files[0];
+    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
+    image.src = await storageRef.getDownloadURL().then((result) => {
+        image.src = result;
+        return result;
+    }).catch(function(error){
+
+      console.log(error);
+    });
+    console.log(image.src);
+  }
+
+  componentDidMount() {
+
+  }
 
 
   componentWillUnmount() {
@@ -91,7 +111,7 @@ class MainPage extends React.Component {
   }
 
   setRedirect = () => {
-    console.log("hello?");
+    // console.log("hello?");
     this.props.history.push('/login');
   }
 
@@ -119,7 +139,13 @@ class MainPage extends React.Component {
 
 
   render() {
-
+    auth.onAuthStateChanged(function(user) {
+    if (user) {
+      console.log(user);
+    } else {
+      console.log("no");
+    }
+  });
     const extra = (
       <ModalExampleControlled />
     )
@@ -138,14 +164,18 @@ class MainPage extends React.Component {
           <progress value="0" max ="100" id="uploader">0%</progress>
           <text>this is temporary(for testing)</text>
           <input type="file" name='fileUploaded' id="fileButton"/>
-          {/* <Button type='submit' onClick={this.uploadFunction}>Upload</Button>*/}
+          { <Button type='Button' onClick={this.uploadFunction}>Upload</Button>}
+          { <Button type='Button' onClick={this.downloadFunction}>Show</Button>}
+        </div>
+        <div className="image" container style = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
+          <text>this is temporary</text>
+          <img id='showPhoto'/>
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,
           display: 'flex',
           justifyContent: 'center'
         }} >
-
         <Link to='/elliot-baker'>
         <Card
           image={picture}
