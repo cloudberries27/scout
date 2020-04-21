@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import MakeAccount from './components/MakeAccount';
 import MainPage from './components/MainPage';
+import Upload from './components/Upload';
 import UserPage from './components/Profiles/UserPage';
 import UserPage2 from './components/Profiles/UserPage2';
 import UserPage3 from './components/Profiles/UserPage3';
@@ -33,6 +34,7 @@ function App() {
             <Route exact path="/elliot-baker" component={UserPage} />
             <Route exact path="/rachel-brown" component={UserPage2} />
             <Route exact path="/michael-rosé" component={UserPage3} />
+            <Route exact path="/upload" component={Upload} />
           </Switch>
         </Layout>
       </HashRouter>
