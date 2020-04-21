@@ -7,7 +7,8 @@ import picture2 from '../images/artist2.png';
 import picture3 from '../images/artist3.jpg';
 import autoBind from 'react-autobind';
 import {auth, db, storage} from '../config'
-
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 import SearchBar from './Search';
 
 class ModalExampleControlled extends Component {
@@ -17,6 +18,15 @@ class ModalExampleControlled extends Component {
   handleOpen = () => this.setState({ modalOpen: true })
 
   handleClose = () => this.setState({ modalOpen: false })
+
+//   const Player = () => (
+//   <AudioPlayer
+//     autoPlay
+//     src="http://example.com/audio.mp3"
+//     onPlay={e => console.log("onPlay")}
+//     // other props here
+//   />
+// );
 
   render() {
     return (
@@ -86,20 +96,21 @@ class MainPage extends React.Component {
       }); //hi
   }
 
-  playAudio = () =>{
-    var show = document.getElementById('audioClip');
-    show.play();
-  }
-
-  stopAudio = () =>{
-    var show = document.getElementById('audioClip');
-    show.pause();
-  }
+  // playAudio = () =>{
+  //   var show = document.getElementById('audioClip');
+  //   show.play();
+  // }
+  //
+  // stopAudio = () =>{
+  //   var show = document.getElementById('audioClip');
+  //   show.pause();
+  // }
 
   async downloadFunction() {
-    // var show = document.getElementById('showPhoto');
-    // var show = document.getElementById('sampleMovie');
-    var show = document.getElementById('audioClip');
+    // var show = document.getElementById('showPhoto'); //this is for photos
+    // var show = document.getElementById('sampleMovie'); //this is for videos
+    var show = this.rap.audio.current; //this is for audio
+    console.log(this.rap.audio);
     var fileButton = document.getElementById('fileButton');
     var file = fileButton.files[0];
     var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
@@ -107,10 +118,9 @@ class MainPage extends React.Component {
         show.src = result;
         return result;
     }).catch(function(error){
-
       console.log(error);
     });
-    console.log(show.src);
+    console.log(this.rap.audio);
   }
 
   componentDidMount() {
@@ -149,6 +159,11 @@ class MainPage extends React.Component {
     });
   }
 
+  // replace either of these on the line where <AudioPlayer pref...> around 197
+  // when doing any of them make sure to only have 1 type at once otherwise it gets messy
+  // <img id='showPhoto'/> this is for images
+  // <video id="sampleMovie" width="640" height="360" preload controls></video> this is for videos
+  // <AudioPlayer ref={(element) => {this.rap = element;}} />
 
   render() {
     auth.onAuthStateChanged(function(user) {
@@ -181,11 +196,7 @@ class MainPage extends React.Component {
         </div>
         <div className="image" container style = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
           <text>this is temporary</text>
-          // <img id='showPhoto'/>
-          // <video id="sampleMovie" width="640" height="360" preload controls></video>
-          <audio id="audioClip"></audio>
-          { <Button type='Button' onClick={this.playAudio}>Play Song</Button>}
-          { <Button type='Button' onClick={this.stopAudio}>Stop Song</Button>}
+          <AudioPlayer ref={(element) => {this.rap = element;}} />
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,
