@@ -86,19 +86,31 @@ class MainPage extends React.Component {
       }); //hi
   }
 
+  playAudio = () =>{
+    var show = document.getElementById('audioClip');
+    show.play();
+  }
+
+  stopAudio = () =>{
+    var show = document.getElementById('audioClip');
+    show.pause();
+  }
+
   async downloadFunction() {
-    var image = document.getElementById('showPhoto');
+    // var show = document.getElementById('showPhoto');
+    // var show = document.getElementById('sampleMovie');
+    var show = document.getElementById('audioClip');
     var fileButton = document.getElementById('fileButton');
     var file = fileButton.files[0];
     var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
-    image.src = await storageRef.getDownloadURL().then((result) => {
-        image.src = result;
+    show.src = await storageRef.getDownloadURL().then((result) => {
+        show.src = result;
         return result;
     }).catch(function(error){
 
       console.log(error);
     });
-    console.log(image.src);
+    console.log(show.src);
   }
 
   componentDidMount() {
@@ -169,7 +181,11 @@ class MainPage extends React.Component {
         </div>
         <div className="image" container style = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
           <text>this is temporary</text>
-          <img id='showPhoto'/>
+          // <img id='showPhoto'/>
+          // <video id="sampleMovie" width="640" height="360" preload controls></video>
+          <audio id="audioClip"></audio>
+          { <Button type='Button' onClick={this.playAudio}>Play Song</Button>}
+          { <Button type='Button' onClick={this.stopAudio}>Stop Song</Button>}
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,
