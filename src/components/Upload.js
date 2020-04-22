@@ -17,7 +17,7 @@ import {
   Label,
   Progress
 } from "semantic-ui-react";
-
+import {auth, db, storage} from '../config';
 
 import axios from "axios";
 
@@ -31,8 +31,10 @@ export default class Upload extends Component {
       file: null,
       fileName: "",
       isUploading: false,
-      statusCode: ""
+      statusCode: "",
+      progressPercentage:0
     };
+    this.fileUpload = this.fileUpload.bind(this);
   }
 
   onFormSubmit = e => {
@@ -40,6 +42,31 @@ export default class Upload extends Component {
     console.log("form submit");
     this.fileUpload(this.state.file);
   };
+  handleChange = (e, { name, value }) => this.setState({ [name]: value });
+  fileUpload = async file => {
+    const formData = new FormData();
+    formData.append("file", file);
+    console.log('test');
+    console.log(file);
+    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
+    var task = storageRef.put(file); //upload file
+    //update progress bar
+    task.on('state_changed',
+       (snapshot) => {
+        var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("this progress",percentage)
+        this.setState({progressPercentage: percentage });
+      },
+      function error(err){
+
+      },
+      function complete(){
+            //Create a reference to the file we want to download
+
+      }); //hi
+    }
+
+
 
   fileChange = e => {
     this.setState(
@@ -54,24 +81,25 @@ export default class Upload extends Component {
     );
   };
 
-  fileUpload = async file => {
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      axios.post("/file/upload/enpoint").then(response => {
-        console.log(response);
-        console.log(response.status);
-        this.setState({ statusCode: response.status }, () => {
-          console.log(
-            "This is the response status code --->",
-            this.state.statusCode
-          );
-        });
-      });
-    } catch (error) {
-      console.error(Error(`Error uploading file ${error.message}`));
-    }
-  };
+
+
+
+
+    // try {
+    //   axios.post("/file/upload/enpoint").then(response => {
+    //     console.log(response);
+    //     console.log(response.status);
+    //     this.setState({ statusCode: response.status }, () => {
+    //       console.log(
+    //         "This is the response status code --->",
+    //         this.state.statusCode
+    //       );
+    //     });
+    //   });
+    // } catch (error) {
+    //   console.error(Error(`Error uploading file ${error.message}`));
+    // }
+  // };
 
   render() {
     const { statusCode } = this.state;
@@ -83,7 +111,7 @@ export default class Upload extends Component {
             <Message>Some random message idk.</Message>
             <Form onSubmit={this.onFormSubmit}>
               <Form.Field>
-                <label>File input & upload </label>
+                <label>File input & upload {this.state.progressPercentage} </label>
                 <Button as="label" htmlFor="file" type="button" animated="fade">
                   <Button.Content visible>
                     <Icon name="file" />
@@ -106,26 +134,16 @@ export default class Upload extends Component {
                 <Button style={{ marginTop: "20px" }} type="submit">
                   Upload
                 </Button>
-                {statusCode && statusCode === 200 ? (
-                  <Progress
-                    style={{ marginTop: "20px" }}
-                    percent={100}
-                    success
-                    progress
-                  >
-                    File Upload Success
-                  </Progress>
-                ) : statusCode && statusCode === 500 ? (
-                  <Progress
-                    style={{ marginTop: "20px" }}
-                    percent={100}
-                    error
-                    active
-                    progress
-                  >
-                    File Upload Failed
-                  </Progress>
-                ) : null}
+                <Progress
+                  style={{ marginTop: "20px" }}
+                  percent={this.state.progressPercentage}
+                  id = "progressBar"
+                  success
+                  progress
+                >
+                  File Upload Success
+                </Progress>
+
               </Form.Field>
             </Form>
           </Tab.Pane>
