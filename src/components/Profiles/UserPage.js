@@ -166,15 +166,19 @@ export default class UserPage extends Component {
     }
 
   }
+  wait(ms) {
+  return new Promise(r => setTimeout(r, ms));
+  }
   getUserData = async (e) => {
     var that = this;
     var usernames={};
     var user;
+    console.log("props are: ", this.props.username);
     if (auth.currentUser){
       db.ref('users/').on('value',function(snapshot) {
          usernames = snapshot.val();
          for(user of Object.keys(usernames)){
-           if(usernames[user]['email']== that.state.user.email){
+           if(user== that.props.username){
 
              that.setState({userData: usernames[user]});
              if(usernames[user]['type']==1){
@@ -189,6 +193,7 @@ export default class UserPage extends Component {
          console.log("inside get data", that.state.userData);
       });
       }
+      await this.wait(500);
     }
 
   getAllData = async (e) => {
@@ -196,14 +201,13 @@ export default class UserPage extends Component {
     var videoGallery = []
     var photoGallery = []
     if (auth.currentUser){
-      this.setState({user:auth.currentUser})
-
-      var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
+      this.setState({user:this.props.username})
+      var listRef = storage.ref().child('files/'+this.props.email+'/gallery'); //all user files
       var res = await listRef.listAll()
       for (var itemRef of res.items) {
          var metadata = await itemRef.getMetadata()
 
-          if (metadata["contentType"] == "audio/mpeg"){
+          if (metadata["contentType"] == "audio/mpeg" || metadata["contentType"] == "audio/mp3"){
 
             var url = await itemRef.getDownloadURL()
             audioGallery.push(url);
@@ -328,11 +332,11 @@ export default class UserPage extends Component {
             <Transition visible={this.state.audioVisible} animation='scale' duration={500}>
             <Segment color ='teal' compact textAlign='center' style={{width:350, marginLeft:'380px'}}>
             {
+
               this.state.audioGallery.map(song=>
                   <Segment color='teal' compact >
                   <ReactAudioPlayer
                     src={song}
-                    autoPlay
                     controls
                   />
                   </Segment>
