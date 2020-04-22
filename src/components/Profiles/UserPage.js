@@ -14,29 +14,6 @@ import '../../stylesheets/userpage.css';
 const ImageCircular = () => (
   <Image src={profile} size='medium' circular />
 )
-class AudioSegment extends Component{
-  state = { visible: true }
-
-  toggleVisibility = () =>
-    this.setState((prevState) => ({ visible: !prevState.visible }))
-
-  render() {
-    const { visible } = this.state
-
-    return (
-      <div>
-        <Button
-          content={visible ? 'Hide' : 'Show'}
-          onClick={this.toggleVisibility}
-        />
-        <Divider hidden />
-        <Transition visible={visible} animation='scale' duration={500}>
-          <Segment color='teal'>Teal</Segment>
-        </Transition>
-      </div>
-    )
-  }
-}
 
 
 
@@ -48,7 +25,19 @@ class MenuCompact extends Component {
   }
 
   handleItemClick = (e, { name }) =>{
-    console.log(this.props.audioSegment);
+    //console.log(this.props.audioSegment);
+    this.props.onAudio();
+    this.setState({ activeItem: name });
+  }
+  handleItemClickPhoto = (e, { name }) =>{
+    //console.log(this.props.audioSegment);
+
+    this.props.onPhoto();
+    this.setState({ activeItem: name });
+  }
+  handleItemClickVideo = (e, { name }) =>{
+    //console.log(this.props.audioSegment);
+    this.props.onVideo();
     this.setState({ activeItem: name });
   }
 
@@ -70,7 +59,7 @@ class MenuCompact extends Component {
         <Menu.Item
           name='Gallery'
           active={activeItem === 'Gallery'}
-          onClick={this.handleItemClick}
+          onClick={this.handleItemClickPhoto}
         >
           <Icon name='photo' />
           Galery
@@ -79,7 +68,7 @@ class MenuCompact extends Component {
         <Menu.Item
           name='Videos'
           active={activeItem === 'Videos'}
-          onClick={this.handleItemClick}
+          onClick={this.handleItemClickVideo}
         >
           <Icon name='video play' />
           Videos
@@ -112,20 +101,54 @@ export default class UserPage extends Component {
       },
       usernameError: "Please enter a username",
       follows: false,
-      display:'Follow'
+      display:'Follow',
+      audioVisible : false,
+      photoVisible: false,
+      videoVisible: false
     };
 
   }
   handleFollow(){
     //Nikhil here goes your code
     const status= this.state.follows;
-    this.setState({follows:true, display:'Following'});
+    this.setState({follows:true, display:'Following',});
+    this.setState((prevState) => ({ audioVisible: !prevState.audioVisible }));
 
+  }
+  toggleVisibility(){
+    //console.log(this.state.visible);
+    if (this.state.photoisible){
+      this.setState({photoVisible:false});
+    }
+    if (this.state.videoVisible){
+      this.setState({videoVisible:false});
+    }
+    this.setState((prevState) => ({ audioVisible: !prevState.audioVisible }));
+  }
+  toggleVisibilityPhoto(){
+    //console.log(this.state.visible);
+    if (this.state.audioVisible){
+      this.setState({audioVisible:false});
+    }
+    if (this.state.videoVisible){
+      this.setState({videoVisible:false});
+    }
+    this.setState((prevState) => ({ photoVisible: !prevState.photoVisible }));
+
+  }
+  toggleVisibilityVideo(){
+    //console.log(this.state.visible);
+    if (this.state.audioVisible){
+      this.setState({audioVisible:false});
+    }
+    if (this.state.photoVisible){
+      this.setState({photoVisible:false});
+    }
+    this.setState((prevState) => ({ videoVisible: !prevState.videoVisible }));
   }
   render() {
     const display='Follow'
 
-    const audioSegment = <AudioSegment/>
     return (
         <div>
             <Header as='h4' size='huge' color='teal' icon textAlign='center'>
@@ -165,11 +188,29 @@ export default class UserPage extends Component {
             <br/>
             <div style={{justifyContent: 'center',
                   alignItems: 'center', display: 'flex'}}>
-                  <MenuCompact audioSegment={audioSegment}/>
+                  <MenuCompact  onAudio={this.toggleVisibility} onPhoto={this.toggleVisibilityPhoto} onVideo={this.toggleVisibilityVideo} />
             </div>
             </Segment>
             <br/>
-            {audioSegment}
+
+            <Transition visible={this.state.audioVisible} animation='scale' duration={500}>
+              <Segment color='teal'>
+              inside of here we need the music data
+              </Segment>
+            </Transition>
+            <Transition visible={this.state.photoVisible} animation='scale' duration={500}>
+              <Segment color='teal'>
+              inside of here we need the photo data
+              </Segment>
+            </Transition>
+            <Transition visible={this.state.videoVisible} animation='scale' duration={500}>
+              <Segment color='teal'>
+              inside of here we need the video data
+              </Segment>
+            </Transition>
+            <br/>
+            <br/>
+            <br/>
 
         </div>
     )
