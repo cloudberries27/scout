@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import Tabs from '../Tabs/Tabs';
 import profile from '../../images/artist1.jpg';
 import autoBind from 'react-autobind';
-
+import {auth, db, storage} from '../../config.js';
 import '../../stylesheets/userpage.css';
 
 const ImageCircular = () => (
@@ -21,13 +21,77 @@ class MenuCompact extends Component {
   constructor(props) {
     super(props);
     autoBind(this);
-    this.state={};
+
+    this.state={
+      user: "",
+      audioGallery: [],
+      photoGallery : [],
+      videoGallery: []
+    };
   }
 
   handleItemClick = (e, { name }) =>{
     //console.log(this.props.audioSegment);
+
+
+
+    // createUrl = storageRef.getDownloadURL().then((url) => {
+    //     console.log(url);
+    //
+    // }).catch(function(error){
+    //   console.log(error);
+    // });
+
+    var file;
+    // for (file = 0; file < listRef.length, file++){
+    //   console.log(file);
+    // }
     this.props.onAudio();
     this.setState({ activeItem: name });
+  }
+  componentDidMount() {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.getAllData();
+      }
+    })
+  }
+  getAllData = async (e) => {
+    var audioGallery = []
+    var videoGallery = []
+    var photoGallery = []
+    if (auth.currentUser){
+      this.setState({user:auth.currentUser})
+      console.log('currentUser')
+      var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
+      var res = await listRef.listAll()
+      for (var itemRef of res.items) {
+         var metadata = await itemRef.getMetadata()
+          console.log(metadata);
+          if (metadata["contentType"] == "audio/mpeg"){
+
+            var url = await itemRef.getDownloadURL()
+            audioGallery.push(url);
+
+          }
+          if (metadata["contentType"] == "video/quicktime"){
+            var url = await itemRef.getDownloadURL()
+            videoGallery.push(url);
+
+          }
+          if (metadata["contentType"] == "image/jpeg"){
+           var url = await itemRef.getDownloadURL()
+            photoGallery.push(url);
+
+          }
+        }
+        this.setState({audioGallery: audioGallery });
+        this.setState({photoGallery: photoGallery });
+        this.setState({videoGallery: videoGallery });
+        console.log(this.state)
+
+    }
+
   }
   handleItemClickPhoto = (e, { name }) =>{
     //console.log(this.props.audioSegment);
@@ -37,12 +101,15 @@ class MenuCompact extends Component {
   }
   handleItemClickVideo = (e, { name }) =>{
     //console.log(this.props.audioSegment);
+
     this.props.onVideo();
     this.setState({ activeItem: name });
   }
 
+
   render() {
     const { activeItem } = this.state
+
 
     return (
       <Menu compact icon='labeled' >
@@ -50,7 +117,6 @@ class MenuCompact extends Component {
           name='Audio'
           active={activeItem === 'Audio'}
           onClick={this.handleItemClick}
-
         >
           <Icon name='music' />
           Audio
