@@ -11,14 +11,15 @@ import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import SearchBar from './Search';
 
-const square = { width: 55, height: 35, color: 'skyblue' }
+
+//this is gonna need to contain the information about the user
+const square = { width: 55, height: 35, color: 'teal' }
 const Profile = () => (
   <div>
   <Link to='/elliot-baker'>
     <Segment circular style={square}>
       <Icon name='user outline'/>
       My profile
-
     </Segment>
   </Link>
 
@@ -217,45 +218,42 @@ class MainPage extends React.Component {
           display: 'flex',
           justifyContent: 'center'
         }} >
-        <Link to='/elliot-baker'>
+
         <Card
           image={picture}
-          header='Elliot Baker'
+          header= <Link to='/elliot-baker'>Elliot Baker</Link>
           meta='Artist'
           description='Elliot is a painter that specializes in water color paintings.'
           extra={extra}
         />
-        </Link>
+
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,
           display: 'flex',
           justifyContent: 'center'
         }} >
-        <Link to='/rachel-brown'>
         <Card
           image={picture2}
-          header='Rachael Brown'
+          header=<Link to='/racher-rose'>Rachel Brown</Link>
           meta='Musician'
           description='Rachel writes and produces her own music and specializes in pop.'
           extra={extra}
         />
-        </Link>
+
         </div>
         <div className="col-3" container style = {{
           marginTop: 30,
           display: 'flex',
           justifyContent: 'center'
         }} >
-        <Link to='/michael-rosé'>
         <Card
           image={picture3}
-          header='Michael Rosé'
+          header=<Link to='/michael-rose'> Michael Rosé</Link>
           meta='Singer'
           description='Michael is a singer that has debutted in multiple shows, including opening in Coachella.'
           extra={extra}
         />
-        </Link>
         </div>
 
 
