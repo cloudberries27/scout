@@ -35,7 +35,7 @@ export default class Upload extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
   async fileUpload() {
-    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+this.state.fileName); //create storageRef
+    var storageRef = storage.ref('files/'+auth.currentUser.email+'/gallery/'+this.state.fileName); //create storageRef
     var task = storageRef.put(this.state.file); //upload file
     //update progress bar
     task.on('state_changed',
@@ -46,7 +46,7 @@ export default class Upload extends Component {
       },
       function error(err){ },
       function complete(){ }
-    ); 
+    );
     }
 
   fileChange = e => {
