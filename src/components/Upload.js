@@ -19,11 +19,6 @@ import {
 } from "semantic-ui-react";
 import {auth, db, storage} from '../config';
 
-import axios from "axios";
-
-
-
-
 export default class Upload extends Component {
   constructor(props) {
     super(props);
@@ -37,36 +32,22 @@ export default class Upload extends Component {
     this.fileUpload = this.fileUpload.bind(this);
   }
 
-  onFormSubmit = e => {
-    e.preventDefault(); // Stop form submit
-    console.log("form submit");
-    this.fileUpload(this.state.file);
-  };
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
-  fileUpload = async file => {
-    const formData = new FormData();
-    formData.append("file", file);
-    console.log('test');
-    console.log(file);
-    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
-    var task = storageRef.put(file); //upload file
+
+  async fileUpload() {
+    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+this.state.fileName); //create storageRef
+    var task = storageRef.put(this.state.file); //upload file
     //update progress bar
     task.on('state_changed',
        (snapshot) => {
-        var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        var percentage = Number(((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(2));
         console.log("this progress",percentage)
         this.setState({progressPercentage: percentage });
       },
-      function error(err){
-
-      },
-      function complete(){
-            //Create a reference to the file we want to download
-
-      }); //hi
+      function error(err){ },
+      function complete(){ }
+    ); 
     }
-
-
 
   fileChange = e => {
     this.setState(
@@ -81,28 +62,6 @@ export default class Upload extends Component {
     );
   };
 
-
-
-
-
-
-    // try {
-    //   axios.post("/file/upload/enpoint").then(response => {
-    //     console.log(response);
-    //     console.log(response.status);
-    //     this.setState({ statusCode: response.status }, () => {
-    //       console.log(
-    //         "This is the response status code --->",
-    //         this.state.statusCode
-    //       );
-    //     });
-    //   });
-    // } catch (error) {
-    //   console.error(Error(`Error uploading file ${error.message}`));
-    // }
-  // };
-
-
   render() {
     const { statusCode } = this.state;
     const panes = [
@@ -111,13 +70,10 @@ export default class Upload extends Component {
         render: () => (
           <Tab.Pane attached={false}>
             <Message>Some random message idk.</Message>
-            <Form onSubmit={this.onFormSubmit}>
+            <Form onSubmit={this.fileUpload}>
               <Form.Field>
-                <label>File input & upload {this.state.progressPercentage} </label>
                 <Button as="label" htmlFor="file" type="button" animated="fade">
-                  <Button.Content visible>
-                    <Icon name="file" />
-                  </Button.Content>
+                  <Button.Content visible><Icon name="file" /></Button.Content>
                   <Button.Content hidden>Choose a File</Button.Content>
                 </Button>
                 <input
@@ -133,9 +89,7 @@ export default class Upload extends Component {
                   readOnly
                   value={this.state.fileName}
                 />
-                <Button style={{ marginTop: "20px" }} type="submit">
-                  Upload
-                </Button>
+                <Button style={{ marginTop: "20px" }} type="submit" disabled={this.state.file === null}> Upload </Button>
                 <Progress
                   style={{ marginTop: "20px" }}
                   percent={this.state.progressPercentage}

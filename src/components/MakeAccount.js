@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Header, Form, Icon, Button } from 'semantic-ui-react'
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import * as firebase from '../config';
 
@@ -25,6 +25,8 @@ export default class Login extends React.Component {
         first_name: false,
         last_name: false
       },
+      file: null,
+      fileName: "",
       picture: "",
       usernameError: "Please enter a username"
     };
@@ -35,7 +37,7 @@ export default class Login extends React.Component {
 
   validate = () => {
     var errors = {
-  // true means invalid, so our conditions got reversed
+  // true means invalid, so the conditions get reversed
     username: this.state.username.length === 0,
     email: this.state.email.length === 0,
     password: this.state.password.length === 0,
@@ -43,7 +45,8 @@ export default class Login extends React.Component {
     last_name: this.state.last_name.length === 0,
     gender: this.state.gender.length === 0,
     type: this.state.type.length === 0,
-    agreement: !this.state.agreement
+    agreement: !this.state.agreement,
+    file: this.state.file === null
   }
   return errors;
   }
@@ -97,20 +100,27 @@ export default class Login extends React.Component {
           type:this.state.type,
           experience:this.state.experience
          });
+       var storageRef = firebase.storage.ref('files/'+this.state.email+'/'+this.state.fileName); //create storageRef
+       var task = storageRef.put(this.state.file); //upload file
     }
   }
-  //for you guys to figure out 
   handleFile = e => {
-    this.setState(
-      { file: e.target.files[0], fileName: e.target.files[0].name },
-      () => {
-        console.log(
-          "File chosen --->",
-          this.state.file,
-          console.log("File name  --->", this.state.fileName)
-        );
-      }
-    );
+    var fileType = e.target.files[0].type;
+    switch(fileType){
+      case "image/gif":
+        break;
+      case "image/jpeg":
+        break;
+      case "image/png":
+        break;
+      case "image/svg+xml":
+        break;
+      default:
+        this.setState( {fileName: "Please give a valid format "});
+        return;
+    }
+    this.setState(  { file: e.target.files[0], fileName: e.target.files[0].name });
+
   };
   componentDidMount() {
 
@@ -139,6 +149,7 @@ export default class Login extends React.Component {
 
     return (
       <Fragment>
+      {firebase.auth.currentUser && <Redirect to="/MainPage" />}
       <div id="wrapper" style = {{ marginTop: 100}}>
         <div id="up" >
           <div>
@@ -150,7 +161,7 @@ export default class Login extends React.Component {
         </div>
 
         <div className="form-group">
-          <div id="down" style = {{ marginTop: 50, display: 'flex', justifyContent: 'center' }}>
+          <div id="down" style = {{ marginTop: 50, marginBottom: 50, display: 'flex', justifyContent: 'center' }}>
             <Form onSubmit={this.handleSubmit.bind(this)}>
               <Form.Group widths='equal'>
                 <Form.Input
@@ -228,20 +239,27 @@ export default class Login extends React.Component {
                   onChange={this.handleChange.bind(this)}
               />
               <Form.Field>
-              <Button as="label" htmlFor="file" type="button" animated="fade">
-                <Button.Content visible>
-                  Profile Picture
-                </Button.Content>
-                <Button.Content hidden>Choose an image</Button.Content>
-              </Button>
-              <input
-                type="file"
-                id="file"
-                name='picture'
-                hidden
-                onChange={this.handleFile.bind(this)}
-              />
+                <Button as="label" htmlFor="file" type="button" animated="fade">
+                  <Button.Content visible>
+                    Profile Picture
+                  </Button.Content>
+                  <Button.Content hidden>Choose an image</Button.Content>
+                </Button>
+                <input
+                  type="file"
+                  id="file"
+                  name='picture'
+                  hidden
+                  onChange={this.handleFile.bind(this)}
+                />
               </Form.Field>
+              <Form.Input
+                fluid
+                label="File Chosen:"
+                placeholder="Use the above bar to browse your file system - supports jpeg, png, and svg"
+                readOnly
+                value={this.state.fileName}
+              />
               <Form.Checkbox
                   label='I agree to the Terms and Conditions'
                   onChange={this.toggle}
