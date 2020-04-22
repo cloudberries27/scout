@@ -17,7 +17,6 @@ const square = { width: 55, height: 35, color: 'teal' }
 const Profile = (props) => (
 
   <div>
-  {console.log("props ", props.user)}
   <Link to={'/'+props.user}>
     <Segment circular style={square}>
       <Icon name='user outline'/>
