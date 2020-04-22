@@ -10,6 +10,7 @@ import Upload from './components/Upload';
 import UserPage from './components/Profiles/UserPage';
 import UserPage2 from './components/Profiles/UserPage2';
 import UserPage3 from './components/Profiles/UserPage3';
+import {auth, db, storage} from './config';
 
 const Wrapper = styled('div')`
   background: white;
@@ -21,12 +22,24 @@ const Wrapper = styled('div')`
   }
 `;
 
+
 function App() {
+  var users={}
+
+  var usernames='';
+  db.ref('users/').on('value',function(snapshot) {
+     usernames = snapshot.val();
+     users=usernames;
+
+  });
   return (
     <Wrapper>
       <HashRouter>
         <Layout>
           <Switch>
+            {Object.keys(users).map(user =>
+              <Route exact path={'/'+user} component={UserPage} />
+            )}
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/makeaccount" component={MakeAccount} />
@@ -35,6 +48,8 @@ function App() {
             <Route exact path="/rachel-brown" component={UserPage2} />
             <Route exact path="/michael-rosé" component={UserPage3} />
             <Route exact path="/upload" component={Upload} />
+            //<Route exact path={'/'+'sb5829'} component={UserPage} />
+
           </Switch>
         </Layout>
       </HashRouter>

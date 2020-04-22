@@ -6,7 +6,7 @@ import picture from '../images/artist1.jpg';
 import picture2 from '../images/artist2.png';
 import picture3 from '../images/artist3.jpg';
 import autoBind from 'react-autobind';
-import {auth, db, storage} from '../config'
+import {auth, db, storage} from '../config';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import SearchBar from './Search';
@@ -300,7 +300,7 @@ class MainPage extends Component {
             <Card
 
               image={this.state.profile_pics[user]}
-              header= <Link to='/elliot-baker'>{users[user]['first_name'] +" " +users[user]['last_name']}</Link>
+              header= <Link to={'/'+user}>{users[user]['first_name'] +" " +users[user]['last_name']}</Link>
               meta={this.returnType(user)}
               description={users[user]['experience']}
               extra={extra}
