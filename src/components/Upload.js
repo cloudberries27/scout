@@ -81,7 +81,7 @@ export default class Upload extends Component {
     );
   };
 
-<<<<<<< HEAD
+
 
 
 
@@ -101,7 +101,7 @@ export default class Upload extends Component {
     //   console.error(Error(`Error uploading file ${error.message}`));
     // }
   // };
-=======
+
   fileUpload = async file => {
     const formData = new FormData();
     formData.append("file", file);
@@ -122,7 +122,6 @@ export default class Upload extends Component {
       console.error(Error(`Error uploading file ${error.message}`));
     }
   };
->>>>>>> 9252aee44e8dce684fc338fa4b04ef3b91c3102c
 
   render() {
     const { statusCode } = this.state;
