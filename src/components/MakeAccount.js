@@ -40,7 +40,7 @@ export default class Login extends React.Component {
   // true means invalid, so the conditions get reversed
     username: this.state.username.length === 0,
     email: this.state.email.length === 0,
-    password: this.state.password.length === 0,
+    password: this.state.password.length <= 7,
     first_name: this.state.first_name.length === 0,
     last_name: this.state.last_name.length === 0,
     gender: this.state.gender.length === 0,
@@ -178,7 +178,7 @@ export default class Login extends React.Component {
                   placeholder='Password'
                   onBlur={this.handleBlur("password")}
                   onChange={this.handleChange.bind(this)}
-                  error={shouldMarkError('password') && { content: 'Please enter a password', pointing: 'above' }}
+                  error={shouldMarkError('password') && {content: 'Please enter an 8 character password', pointing: 'above' }}
                 />
                 <Form.Input
                   label='Email'

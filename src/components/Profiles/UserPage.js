@@ -81,7 +81,7 @@ class MenuCompact extends Component {
           onClick={this.handleItemClickPhoto}
         >
           <Icon name='photo' />
-          Galery
+          Gallery
         </Menu.Item>
 
         <Menu.Item
@@ -203,18 +203,13 @@ export default class UserPage extends Component {
       for (var itemRef of res.items) {
          var metadata = await itemRef.getMetadata()
 
-          if (metadata["contentType"] == "audio/mp3"){
+          if (metadata["contentType"] == "audio/mpeg"){
 
             var url = await itemRef.getDownloadURL()
             audioGallery.push(url);
 
           }
-          if (metadata["contentType"] == "video/quicktime"){
-            var url = await itemRef.getDownloadURL()
-            videoGallery.push(url);
-
-          }
-          if (metadata["contentType"] == "video/mov"){
+          if (metadata["contentType"] == "video/quicktime" || metadata["contentType"] == "video/mov"){
             var url = await itemRef.getDownloadURL()
             videoGallery.push(url);
 
@@ -275,7 +270,13 @@ export default class UserPage extends Component {
     return this.state.userData['type'];
   }
   render() {
-    const display='Follow'
+    console.log(window.location.href);
+    var url = window.location.href;
+    var thisUser = url.lastIndexOf('/')
+    if(url.substring(thisUser) == ("/" + this.state.userData['username']))
+    {
+      this.state.display = "Upload";
+    }
 
     return (
         <div>
@@ -292,7 +293,7 @@ export default class UserPage extends Component {
             <div className='header'>
             <Image src={this.state.profile_pic} size='medium' circular />
 
-            
+
 
             </div>
             <Divider horizontal style={{ color: 'lightseagreen', fontSize: 'x-large' }}>{this.state.userData['first_name']+" "+this.state.userData['last_name']}</Divider>
@@ -340,12 +341,7 @@ export default class UserPage extends Component {
             {
               this.state.photoGallery.map(pic=>
                   <Segment color='teal' compact >
-                  <Image
-                  src={pic}
-                  size='medium'
-                  centered
-                  rounded
-                  bordered />
+                  <Image src={pic} size='medium' centered rounded bordered />
                   </Segment>
               )
             }
@@ -355,9 +351,7 @@ export default class UserPage extends Component {
             <Segment color ='teal' compact textAlign='center' style={{ width:650,marginLeft:'250px'}}>
             {
               this.state.videoGallery.map(video=>
-
-                  <ReactPlayer url={video} playing />
-
+                  <ReactPlayer url={video} playing={false} controls={true} />
               )
             }
             </Segment>
@@ -370,3 +364,6 @@ export default class UserPage extends Component {
     )
   }
 }
+// <img id='showPhoto'/> this is for images
+  // <video id="sampleMovie" width="640" height="360" preload controls></video> this is for videos
+  // <AudioPlayer ref={(element) => {this.rap = element;}} />
