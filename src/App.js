@@ -38,15 +38,12 @@ function App() {
         <Layout>
           <Switch>
             {Object.keys(users).map(user =>
-              <Route exact path={'/'+user} component={UserPage} />
+              <Route exact path={'/'+user} component={UserPage}/>
             )}
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/makeaccount" component={MakeAccount} />
             <Route exact path="/mainpage" component={MainPage} />
-            <Route exact path="/elliot-baker" component={UserPage} />
-            <Route exact path="/rachel-brown" component={UserPage2} />
-            <Route exact path="/michael-rosé" component={UserPage3} />
             <Route exact path="/upload" component={Upload} />
             //<Route exact path={'/'+'sb5829'} component={UserPage} />
 

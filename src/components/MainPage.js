@@ -75,7 +75,7 @@ class MainPage extends Component {
     autoBind(this);
     this.state = {
       users: {},
-      profile_pics: {sb58299:'eee'}
+      profile_pics: {}
     };
   }
 

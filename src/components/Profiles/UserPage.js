@@ -13,9 +13,6 @@ import ReactAudioPlayer from 'react-audio-player';
 import ReactPlayer from 'react-player'
 import '../../stylesheets/userpage.css';
 
-const ImageCircular = () => (
-  <Image src={profile} size='medium' circular />
-)
 
 
 
@@ -129,17 +126,71 @@ export default class UserPage extends Component {
       videoVisible: false,
       audioGallery: [],
       photoGallery : [],
-      videoGallery: []
+      videoGallery: [],
+      userData:{},
+      profile_pic:''
     };
 
   }
   componentDidMount() {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
+
         await this.getAllData();
+        await this.getUserData();
+        await this.getProPics();
       }
     })
   }
+  getProPics = async (e) => {
+
+    if (auth.currentUser){
+      var pic;
+      var user;
+
+      var storageRef = storage.ref().child('files/'+this.state.userData['email']+'/profilepics');
+      //var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
+      var res = await storageRef.listAll();
+      for(var itemRef of res.items){
+        console.log("inside storage ref", user, itemRef.getDownloadURL());
+        var url = await itemRef.getDownloadURL();
+        console.log("user is", user, url);
+        pic=url;
+
+
+
+      }
+
+
+      this.setState({profile_pic:pic});
+    }
+
+  }
+  getUserData = async (e) => {
+    var that = this;
+    var usernames={};
+    var user;
+    if (auth.currentUser){
+      db.ref('users/').on('value',function(snapshot) {
+         usernames = snapshot.val();
+         for(user of Object.keys(usernames)){
+           if(usernames[user]['email']== that.state.user.email){
+
+             that.setState({userData: usernames[user]});
+             if(usernames[user]['type']==1){
+               that.state.userData['type']='Scout';
+             }
+             else{
+               that.state.userData['type']='Recruiter';
+             }
+           }
+
+         }
+         console.log("inside get data", that.state.userData);
+      });
+      }
+    }
+
   getAllData = async (e) => {
     var audioGallery = []
     var videoGallery = []
@@ -178,6 +229,8 @@ export default class UserPage extends Component {
         this.setState({photoGallery: photoGallery });
         this.setState({videoGallery: videoGallery });
         console.log("inside get data", this.state);
+        console.log("inside get data", this.state.user);
+
 
     }
 
@@ -218,6 +271,9 @@ export default class UserPage extends Component {
     }
     this.setState((prevState) => ({ videoVisible: !prevState.videoVisible }));
   }
+  getType(){
+    return this.state.userData['type'];
+  }
   render() {
     const display='Follow'
 
@@ -234,16 +290,18 @@ export default class UserPage extends Component {
             {this.state.display}
             </Button>
             <div className='header'>
-             <ImageCircular />
-            </div>
+            <Image src={this.state.profile_pic} size='medium' circular />
 
-            <Divider horizontal style={{ color: 'lightseagreen', fontSize: 'x-large' }}>Elliot Whatever</Divider>
+            
+
+            </div>
+            <Divider horizontal style={{ color: 'lightseagreen', fontSize: 'x-large' }}>{this.state.userData['first_name']+" "+this.state.userData['last_name']}</Divider>
             <Item style={{justifyContent: 'center',
                   alignItems: 'center', color: 'dimgray',  display: 'flex'}}>
               <Item.Content>
                 <br/>
                 <Item.Description style={{fontSize:'large'}}>
-                Painter
+                Artist
                 </Item.Description>
               </Item.Content>
 
@@ -251,10 +309,7 @@ export default class UserPage extends Component {
             <br/>
             <br/>
             <Container textAlign='center' style={{color:'gray', width:455}}>
-            An artist of considerable range, Chet Faker —
-            the name taken by Melbourne-raised, Brooklyn-based Nick Murphy —
-             writes, performs and records
-            all of his own music, giving it a warm, intimate feel with a solid groove structure.
+            {this.state.userData['experience']}
             </Container>
             <br/>
             <br/>
