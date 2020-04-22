@@ -97,6 +97,9 @@ class MainPage extends Component {
               if (that.state.users[user]['type']==1){
                 that.state.users[user]['type']='Scout';
               }
+              else{
+                that.state.users[user]['type']='Recruiter';
+              }
             }
           }
         }
@@ -301,7 +304,7 @@ class MainPage extends Component {
 
               image={this.state.profile_pics[user]}
               header= <Link to={'/'+user}>{users[user]['first_name'] +" " +users[user]['last_name']}</Link>
-              meta={this.returnType(user)}
+              meta={users[user]['type']}
               description={users[user]['experience']}
               extra={extra}
             />
