@@ -2,7 +2,7 @@
 
 ## Description:
 
-    Scout is designed around the struggle of artists, athletes and creators in getting found and displaying their work.  It is now easier than ever for people to record and upload their work, but no centralized place for people to show off what they can do to the people that it matters most.  By creating a professional product for all types of people, from the athlete or performer wanting to show their work off to colleges or professionals, to artists and creators with families looking for a side gig, people can easily market their hard work into the next big opportunity.  Scout’s objective is to be a tool for people to easily connect with other professionals in their industry, keep their work in a centralized location, and find jobs.
+Scout is designed around the struggle of artists, athletes and creators in getting found and displaying their work.  It is now easier than ever for people to record and upload their work, but no centralized place for people to show off what they can do to the people that it matters most.  By creating a professional product for all types of people, from the athlete or performer wanting to show their work off to colleges or professionals, to artists and creators with families looking for a side gig, people can easily market their hard work into the next big opportunity.  Scout’s objective is to be a tool for people to easily connect with other professionals in their industry, keep their work in a centralized location, and find jobs.
 
 ## Requirements:
 
@@ -59,3 +59,5 @@ Also, be sure to have `git` available in your PATH, `npm` might need it.
 ![](getStarted.gif)
 
 This is an example; please don't use 12345678 as a password! 
+
+Scout was created by: Kevin Altieri, Sabrena Beck, Claudia Rodriguez, Nikhil Vaidyamath
