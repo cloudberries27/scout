@@ -303,7 +303,7 @@ class MainPage extends Component {
             placeContent: 'end space-between'
           }}>
             <Profile/>
-            <Button type='submit' onClick={this.submitFunction}>Log Out</Button>
+            <Button type='submit' onClick={this.submitFunction} basic color='teal'style={{width:100, height:50}}>Log Out</Button>
           </div>
           <HeaderApp />
         </div>
