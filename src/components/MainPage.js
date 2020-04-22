@@ -77,15 +77,31 @@ class MainPage extends Component {
       users: {},
       profile_pics: {}
     };
+
   }
 
   componentDidMount() {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.getUserData();
+        await this.getProPics();
+      }
+    })
+
+  }
+  wait(ms) {
+  return new Promise(r => setTimeout(r, ms));
+  }
+  getUserData = async (e) => {
     var that = this;
-    var usernames='';
+    var usernames={};
     var user;
     var attr;
-     db.ref('users/').on('value',function(snapshot) {
+    console.log("props are: ", this.props.username);
+    if (auth.currentUser){
+      db.ref('users/').on('value',function(snapshot) {
         usernames = snapshot.val();
+
         that.setState({
           users: usernames
         });
@@ -103,15 +119,13 @@ class MainPage extends Component {
             }
           }
         }
-        that.getProPics();
-     });
+      });
+      }
+      await this.wait(500);
+    }
 
-
-
-  }
   getProPics = async (e) => {
 
-    if (auth.currentUser){
       var pics= {}
       var user;
       for(user of Object.keys(this.state.users)){
@@ -131,7 +145,8 @@ class MainPage extends Component {
 
 
       this.setState({profile_pics:pics});
-    }
+
+    await  this.wait(500);
 
   }
 
@@ -276,7 +291,9 @@ class MainPage extends Component {
       <ModalExampleControlled />
     )
     const {users} = this.state;
+
     return (
+
 
       <div id="wrapper">
         <div id="up" >
