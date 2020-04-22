@@ -9,6 +9,8 @@ import Tabs from '../Tabs/Tabs';
 import profile from '../../images/artist1.jpg';
 import autoBind from 'react-autobind';
 import {auth, db, storage} from '../../config.js';
+import ReactAudioPlayer from 'react-audio-player';
+import ReactPlayer from 'react-player'
 import '../../stylesheets/userpage.css';
 
 const ImageCircular = () => (
@@ -23,10 +25,7 @@ class MenuCompact extends Component {
     autoBind(this);
 
     this.state={
-      user: "",
-      audioGallery: [],
-      photoGallery : [],
-      videoGallery: []
+      user: ""
     };
   }
 
@@ -49,50 +48,7 @@ class MenuCompact extends Component {
     this.props.onAudio();
     this.setState({ activeItem: name });
   }
-  componentDidMount() {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await this.getAllData();
-      }
-    })
-  }
-  getAllData = async (e) => {
-    var audioGallery = []
-    var videoGallery = []
-    var photoGallery = []
-    if (auth.currentUser){
-      this.setState({user:auth.currentUser})
-      console.log('currentUser')
-      var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
-      var res = await listRef.listAll()
-      for (var itemRef of res.items) {
-         var metadata = await itemRef.getMetadata()
-          console.log(metadata);
-          if (metadata["contentType"] == "audio/mpeg"){
 
-            var url = await itemRef.getDownloadURL()
-            audioGallery.push(url);
-
-          }
-          if (metadata["contentType"] == "video/quicktime"){
-            var url = await itemRef.getDownloadURL()
-            videoGallery.push(url);
-
-          }
-          if (metadata["contentType"] == "image/jpeg"){
-           var url = await itemRef.getDownloadURL()
-            photoGallery.push(url);
-
-          }
-        }
-        this.setState({audioGallery: audioGallery });
-        this.setState({photoGallery: photoGallery });
-        this.setState({videoGallery: videoGallery });
-        console.log(this.state)
-
-    }
-
-  }
   handleItemClickPhoto = (e, { name }) =>{
     //console.log(this.props.audioSegment);
 
@@ -170,8 +126,60 @@ export default class UserPage extends Component {
       display:'Follow',
       audioVisible : false,
       photoVisible: false,
-      videoVisible: false
+      videoVisible: false,
+      audioGallery: [],
+      photoGallery : [],
+      videoGallery: []
     };
+
+  }
+  componentDidMount() {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        await this.getAllData();
+      }
+    })
+  }
+  getAllData = async (e) => {
+    var audioGallery = []
+    var videoGallery = []
+    var photoGallery = []
+    if (auth.currentUser){
+      this.setState({user:auth.currentUser})
+
+      var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
+      var res = await listRef.listAll()
+      for (var itemRef of res.items) {
+         var metadata = await itemRef.getMetadata()
+
+          if (metadata["contentType"] == "audio/mp3"){
+
+            var url = await itemRef.getDownloadURL()
+            audioGallery.push(url);
+
+          }
+          if (metadata["contentType"] == "video/quicktime"){
+            var url = await itemRef.getDownloadURL()
+            videoGallery.push(url);
+
+          }
+          if (metadata["contentType"] == "video/mov"){
+            var url = await itemRef.getDownloadURL()
+            videoGallery.push(url);
+
+          }
+          if (metadata["contentType"] == "image/jpeg"){
+           var url = await itemRef.getDownloadURL()
+            photoGallery.push(url);
+
+          }
+        }
+        this.setState({audioGallery: audioGallery });
+        this.setState({photoGallery: photoGallery });
+        this.setState({videoGallery: videoGallery });
+        console.log("inside get data", this.state);
+
+    }
 
   }
   handleFollow(){
@@ -183,9 +191,7 @@ export default class UserPage extends Component {
   }
   toggleVisibility(){
     //console.log(this.state.visible);
-    if (this.state.photoisible){
       this.setState({photoVisible:false});
-    }
     if (this.state.videoVisible){
       this.setState({videoVisible:false});
     }
@@ -260,19 +266,46 @@ export default class UserPage extends Component {
             <br/>
 
             <Transition visible={this.state.audioVisible} animation='scale' duration={500}>
-              <Segment color='teal'>
-              inside of here we need the music data
-              </Segment>
+            <Segment color ='teal' compact textAlign='center' style={{width:350, marginLeft:'380px'}}>
+            {
+              this.state.audioGallery.map(song=>
+                  <Segment color='teal' compact >
+                  <ReactAudioPlayer
+                    src={song}
+                    autoPlay
+                    controls
+                  />
+                  </Segment>
+              )
+            }
+            </Segment>
             </Transition>
-            <Transition visible={this.state.photoVisible} animation='scale' duration={500}>
-              <Segment color='teal'>
-              inside of here we need the photo data
-              </Segment>
+            <Transition visible={this.state.photoVisible} animation='scale' duration={500} >
+            <Segment color ='teal' compact textAlign='center' style={{width:350, marginLeft:'380px'}}>
+            {
+              this.state.photoGallery.map(pic=>
+                  <Segment color='teal' compact >
+                  <Image
+                  src={pic}
+                  size='medium'
+                  centered
+                  rounded
+                  bordered />
+                  </Segment>
+              )
+            }
+            </Segment>
             </Transition>
             <Transition visible={this.state.videoVisible} animation='scale' duration={500}>
-              <Segment color='teal'>
-              inside of here we need the video data
-              </Segment>
+            <Segment color ='teal' compact textAlign='center' style={{ width:650,marginLeft:'250px'}}>
+            {
+              this.state.videoGallery.map(video=>
+
+                  <ReactPlayer url={video} playing />
+
+              )
+            }
+            </Segment>
             </Transition>
             <br/>
             <br/>

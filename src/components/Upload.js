@@ -66,10 +66,10 @@ export default class Upload extends Component {
     const { statusCode } = this.state;
     const panes = [
       {
-        menuItem: "Import ",
+
         render: () => (
           <Tab.Pane attached={false}>
-            <Message>Some random message idk.</Message>
+            <Message style={{textAlign:'center'}}>Make your profile more interesting. Show what you got!</Message>
             <Form onSubmit={this.fileUpload}>
               <Form.Field>
                 <Button as="label" htmlFor="file" type="button" animated="fade">
@@ -108,7 +108,7 @@ export default class Upload extends Component {
     ];
     return (
       <Segment style={{ padding: "5em 1em" }} vertical>
-        <Divider horizontal>FILE UPLOAD COMPONENT</Divider>
+        <Divider horizontal>UPLOAD PICTURES, AUDIOS AND VIDEOS!</Divider>
         <Tab menu={{ pointing: true }} panes={panes} />
       </Segment>
     );
