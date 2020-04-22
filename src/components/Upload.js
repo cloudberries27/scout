@@ -58,6 +58,8 @@ export default class Upload extends Component {
     const formData = new FormData();
     formData.append("file", file);
     try {
+      //NIKHIL !!! this is where you would put your code for uploading
+
       axios.post("/file/upload/enpoint").then(response => {
         console.log(response);
         console.log(response.status);

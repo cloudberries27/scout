@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import HeaderApp from '../Header';
-import { Button, Icon, Card, Modal, Header} from 'semantic-ui-react';
+import { Button, Icon, Card, Modal, Header, Segment} from 'semantic-ui-react';
 import { withRouter, Link } from 'react-router-dom';
 import picture from '../images/artist1.jpg';
 import picture2 from '../images/artist2.png';
@@ -10,6 +10,20 @@ import {auth, db, storage} from '../config'
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import SearchBar from './Search';
+
+const square = { width: 55, height: 35, color: 'skyblue' }
+const Profile = () => (
+  <div>
+  <Link to='/elliot-baker'>
+    <Segment circular style={square}>
+      <Icon name='user outline'/>
+      My profile
+
+    </Segment>
+  </Link>
+
+  </div>
+)
 
 class ModalExampleControlled extends Component {
 
@@ -184,7 +198,7 @@ class MainPage extends React.Component {
             display: 'flex',
             placeContent: 'end space-between'
           }}>
-            <SearchBar submitFunction = {this.searchFunction}/>
+            <Profile/>
             <Button type='submit' onClick={this.submitFunction}>Log Out</Button>
           </div>
           <HeaderApp />
