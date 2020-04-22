@@ -81,6 +81,7 @@ export default class Upload extends Component {
     );
   };
 
+<<<<<<< HEAD
 
 
 
@@ -100,6 +101,28 @@ export default class Upload extends Component {
     //   console.error(Error(`Error uploading file ${error.message}`));
     // }
   // };
+=======
+  fileUpload = async file => {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      //NIKHIL !!! this is where you would put your code for uploading
+
+      axios.post("/file/upload/enpoint").then(response => {
+        console.log(response);
+        console.log(response.status);
+        this.setState({ statusCode: response.status }, () => {
+          console.log(
+            "This is the response status code --->",
+            this.state.statusCode
+          );
+        });
+      });
+    } catch (error) {
+      console.error(Error(`Error uploading file ${error.message}`));
+    }
+  };
+>>>>>>> 9252aee44e8dce684fc338fa4b04ef3b91c3102c
 
   render() {
     const { statusCode } = this.state;

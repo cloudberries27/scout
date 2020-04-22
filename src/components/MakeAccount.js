@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Header, Form, Icon } from 'semantic-ui-react'
+import { Header, Form, Icon, Button } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import * as firebase from '../config';
@@ -25,6 +25,7 @@ export default class Login extends React.Component {
         first_name: false,
         last_name: false
       },
+      picture: "",
       usernameError: "Please enter a username"
     };
 
@@ -98,7 +99,19 @@ export default class Login extends React.Component {
          });
     }
   }
-
+  //for you guys to figure out 
+  handleFile = e => {
+    this.setState(
+      { file: e.target.files[0], fileName: e.target.files[0].name },
+      () => {
+        console.log(
+          "File chosen --->",
+          this.state.file,
+          console.log("File name  --->", this.state.fileName)
+        );
+      }
+    );
+  };
   componentDidMount() {
 
   }
@@ -214,10 +227,26 @@ export default class Login extends React.Component {
                   placeholder='Tell us more about you...'
                   onChange={this.handleChange.bind(this)}
               />
+              <Form.Field>
+              <Button as="label" htmlFor="file" type="button" animated="fade">
+                <Button.Content visible>
+                  Profile Picture
+                </Button.Content>
+                <Button.Content hidden>Choose an image</Button.Content>
+              </Button>
+              <input
+                type="file"
+                id="file"
+                name='picture'
+                hidden
+                onChange={this.handleFile.bind(this)}
+              />
+              </Form.Field>
               <Form.Checkbox
                   label='I agree to the Terms and Conditions'
                   onChange={this.toggle}
               />
+
               <Form.Button disabled={isDisabled}>Submit</Form.Button>
             </Form>
           </div>
