@@ -14,9 +14,11 @@ import SearchBar from './Search';
 
 //this is gonna need to contain the information about the user
 const square = { width: 55, height: 35, color: 'teal' }
-const Profile = () => (
+const Profile = (props) => (
+
   <div>
-  <Link to='/elliot-baker'>
+  {console.log("props ", props.user)}
+  <Link to={'/'+props.user}>
     <Segment circular style={square}>
       <Icon name='user outline'/>
       My profile
@@ -75,7 +77,8 @@ class MainPage extends Component {
     autoBind(this);
     this.state = {
       users: {},
-      profile_pics: {}
+      profile_pics: {},
+      currentUser:''
     };
 
   }
@@ -116,6 +119,9 @@ class MainPage extends Component {
               else{
                 that.state.users[user]['type']='Recruiter';
               }
+            }
+            if(attr=='email' && that.state.users[user][attr]==auth.currentUser.email){
+              that.setState({currentUser: user});
             }
           }
         }
@@ -302,7 +308,8 @@ class MainPage extends Component {
             display: 'flex',
             placeContent: 'end space-between'
           }}>
-            <Profile/>
+
+            <Profile user={this.state.currentUser}/>
             <Button type='submit' onClick={this.submitFunction} basic color='teal'style={{width:100, height:50}}>Log Out</Button>
           </div>
           <HeaderApp />
