@@ -69,12 +69,69 @@ class ModalExampleControlled extends Component {
   }
 }
 
-class MainPage extends React.Component {
+class MainPage extends Component {
   constructor(props) {
     super(props);
     autoBind(this);
+    this.state = {
+      users: {},
+      profile_pics: {sb58299:'eee'}
+    };
+  }
+
+  componentDidMount() {
+    var that = this;
+    var usernames='';
+    var user;
+    var attr;
+     db.ref('users/').on('value',function(snapshot) {
+        usernames = snapshot.val();
+        that.setState({
+          users: usernames
+        });
+        for(user of Object.keys(that.state.users)){
+
+          for(attr of Object.keys(that.state.users[user])){
+
+            if(attr=='type'){
+              if (that.state.users[user]['type']==1){
+                that.state.users[user]['type']='Scout';
+              }
+            }
+          }
+        }
+        that.getProPics();
+     });
+
+
 
   }
+  getProPics = async (e) => {
+
+    if (auth.currentUser){
+      var pics= {}
+      var user;
+      for(user of Object.keys(this.state.users)){
+        var storageRef = storage.ref().child('files/'+this.state.users[user]['email']+'/profilepics');
+        //var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
+        var res = await storageRef.listAll();
+        for(var itemRef of res.items){
+          console.log("inside storage ref", user, itemRef.getDownloadURL());
+          var url = await itemRef.getDownloadURL();
+          console.log("user is", user, url);
+          pics[user]=url;
+
+        }
+
+
+      }
+
+
+      this.setState({profile_pics:pics});
+    }
+
+  }
+
   submitFunction = () => {
     auth.signOut().then(() => {
       this.props.history.push('Login')
@@ -138,14 +195,9 @@ class MainPage extends React.Component {
     console.log(this.rap.audio);
   }
 
-  componentDidMount() {
-
-  }
 
 
-  componentWillUnmount() {
 
-  }
 
   setRedirect = () => {
     // console.log("hello?");
@@ -154,6 +206,29 @@ class MainPage extends React.Component {
 
   handleClick() {
 
+  }
+  returnType(user){
+    var attr;
+    if(this.state.users[user]){
+      for(attr of Object.keys(this.state.users[user])){
+        //console.log('in return', attr);
+        if(attr=='type'){
+          if (this.state.users[user]['type']==1){
+            return 'Scout';
+          }
+          else{
+            return 'Recruiter';
+          }
+        }
+      }
+    }
+    }
+  returnPicture(user){
+    console.log("in pro pic", this.state.profile_pics);
+    if(this.state.profile_pics[user]){
+      console.log("in pro pic", this.state.profile_pics);
+      return this.state.profile_pics[user];
+    }
   }
   searchFunction(event){
     //prevents the page from re-loading
@@ -174,6 +249,7 @@ class MainPage extends React.Component {
     });
   }
 
+
   // replace either of these on the line where <AudioPlayer pref...> around 197
   // when doing any of them make sure to only have 1 type at once otherwise it gets messy
   // <img id='showPhoto'/> this is for images
@@ -183,15 +259,22 @@ class MainPage extends React.Component {
   render() {
     auth.onAuthStateChanged(function(user) {
     if (user) {
-      console.log(user);
+
+
     } else {
       console.log("no");
     }
-  });
+
+  }
+
+);
+
     const extra = (
       <ModalExampleControlled />
     )
+    const {users} = this.state;
     return (
+
       <div id="wrapper">
         <div id="up" >
           <div className='right' container style = {{
@@ -203,60 +286,28 @@ class MainPage extends React.Component {
             <Button type='submit' onClick={this.submitFunction}>Log Out</Button>
           </div>
           <HeaderApp />
-          <progress value="0" max ="100" id="uploader">0%</progress>
-          <text>this is temporary(for testing)</text>
-          <input type="file" name='fileUploaded' id="fileButton"/>
-          { <Button type='Button' onClick={this.uploadFunction}>Upload</Button>}
-          { <Button type='Button' onClick={this.downloadFunction}>Show</Button>}
-        </div>
-        <div className="image" container style = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
-          <text>this is temporary</text>
-          <AudioPlayer ref={(element) => {this.rap = element;}} />
-        </div>
-        <div className="col-3" container style = {{
-          marginTop: 30,
-          display: 'flex',
-          justifyContent: 'center'
-        }} >
-
-        <Card
-          image={picture}
-          header= <Link to='/elliot-baker'>Elliot Baker</Link>
-          meta='Artist'
-          description='Elliot is a painter that specializes in water color paintings.'
-          extra={extra}
-        />
-
-        </div>
-        <div className="col-3" container style = {{
-          marginTop: 30,
-          display: 'flex',
-          justifyContent: 'center'
-        }} >
-        <Card
-          image={picture2}
-          header=<Link to='/racher-rose'>Rachel Brown</Link>
-          meta='Musician'
-          description='Rachel writes and produces her own music and specializes in pop.'
-          extra={extra}
-        />
-
-        </div>
-        <div className="col-3" container style = {{
-          marginTop: 30,
-          display: 'flex',
-          justifyContent: 'center'
-        }} >
-        <Card
-          image={picture3}
-          header=<Link to='/michael-rose'> Michael Rosé</Link>
-          meta='Singer'
-          description='Michael is a singer that has debutted in multiple shows, including opening in Coachella.'
-          extra={extra}
-        />
         </div>
 
+        <div>
+        {console.log("outside", users)}
+        {
+          Object.keys(users).map(user =>
+            <div className="col-3" container style = {{
+              marginTop: 30,
+              display: 'flex',
+              justifyContent: 'center'
+            }} >
+            <Card
 
+              image={this.state.profile_pics[user]}
+              header= <Link to='/elliot-baker'>{users[user]['first_name'] +" " +users[user]['last_name']}</Link>
+              meta={this.returnType(user)}
+              description={users[user]['experience']}
+              extra={extra}
+            />
+            </div>
+          )}
+        </div>
 
       </div>
 
