@@ -22,16 +22,18 @@ const Wrapper = styled('div')`
   }
 `;
 
-
 function App() {
-  var users={}
+  var users= []
 
   var usernames='';
+  console.log("test");
   db.ref('users/').on('value',function(snapshot) {
-     usernames = snapshot.val();
-     users=usernames;
-
+    snapshot.forEach(function(child)
+    {
+      users.push(child.val().username);
+    });
   });
+  console.log(users);
   return (
     <Wrapper>
       <HashRouter>

@@ -118,7 +118,7 @@ export default class UserPage extends Component {
         first_name: false,
         last_name: false
       },
-      usernameError: "Please enter a username",
+      sameUser: false,
       follows: false,
       display:'Follow',
       audioVisible : false,
@@ -237,6 +237,9 @@ export default class UserPage extends Component {
     this.setState((prevState) => ({ audioVisible: !prevState.audioVisible }));
 
   }
+  handleUpload(){
+    console.log("yeet");
+  }
   toggleVisibility(){
     //console.log(this.state.visible);
       this.setState({photoVisible:false});
@@ -275,6 +278,7 @@ export default class UserPage extends Component {
     var thisUser = url.lastIndexOf('/')
     if(url.substring(thisUser) == ("/" + this.state.userData['username']))
     {
+      this.state.sameUser = true;
       this.state.display = "Upload";
     }
 
@@ -287,7 +291,7 @@ export default class UserPage extends Component {
 
 
             <Segment raised>
-            <Button basic color='teal' onClick={this.handleFollow}>
+            <Button basic color='teal' /*{this.state.sameUser} ? onClick = {this.handleUpload} :*/ onClick={this.handleFollow}>
             {this.state.display}
             </Button>
             <div className='header'>
