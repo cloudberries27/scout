@@ -100,7 +100,7 @@ export default class Login extends React.Component {
           type:this.state.type,
           experience:this.state.experience
          });
-       var storageRef = firebase.storage.ref('files/'+this.state.email+'/'+this.state.fileName); //create storageRef
+       var storageRef = firebase.storage.ref('files/'+this.state.email+'/profilepics/'+this.state.fileName); //create storageRef
        var task = storageRef.put(this.state.file); //upload file
     }
   }
