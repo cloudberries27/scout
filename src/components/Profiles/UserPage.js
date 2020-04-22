@@ -280,10 +280,19 @@ export default class UserPage extends Component {
     console.log(window.location.href);
     var url = window.location.href;
     var thisUser = url.lastIndexOf('/')
+    let displayButton;
+    displayButton = <Button basic color='teal' onClick={this.handleFollow}> {this.state.display} </Button>
     if(url.substring(thisUser) == ("/" + this.state.userData['username']))
     {
-      this.state.sameUser = true;
       this.state.display = "Upload";
+      displayButton = <Link to="/upload">
+      <Button basic color='teal'> {this.state.display} </Button>
+      </Link>
+    }
+
+    if(this.state.sameUser)
+    {
+
     }
 
     return (
@@ -295,9 +304,7 @@ export default class UserPage extends Component {
 
 
             <Segment raised>
-            <Button basic color='teal' /*{this.state.sameUser} ? onClick = {this.handleUpload} :*/ onClick={this.handleFollow}>
-            {this.state.display}
-            </Button>
+            {displayButton}
             <div className='header'>
             <Image src={this.state.profile_pic} size='medium' circular />
 

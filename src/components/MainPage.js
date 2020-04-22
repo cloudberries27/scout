@@ -1,6 +1,7 @@
 import React, { Component} from 'react';
 import HeaderApp from '../Header';
-import { Button, Icon, Card, Modal, Header, Segment} from 'semantic-ui-react';
+import _ from 'lodash'
+import { Button, Icon, Card, Modal, Header, Segment, Grid, Search} from 'semantic-ui-react';
 import { withRouter, Link } from 'react-router-dom';
 import picture from '../images/artist1.jpg';
 import picture2 from '../images/artist2.png';
@@ -77,7 +78,11 @@ class MainPage extends Component {
     this.state = {
       users: {},
       profile_pics: {},
-      currentUser:''
+      isLoading: false,
+      value: "",
+      results:[],
+      source: null,
+      first: true
     };
 
   }
@@ -129,6 +134,40 @@ class MainPage extends Component {
       await this.wait(500);
     }
 
+
+
+  }
+
+  // async setSource() {
+  //   console.log("test");
+  //   var num = 0;
+  //   var database = {};
+  //   var numUsers = await db.ref().child('users').once('value', function(data) { data.forEach(function(child){ database[num]=child.val(); num+=1; });});
+  //   console.log("Database: " + database);
+  //   this.setState({source: _.times(numUsers, () => ({
+  //   username: database.username,
+  //   first_name: database.first_name,
+  //   last_name: database.last_name,
+  // }))})}
+
+  handleResultSelect = (e, { result }) => this.setState({ value: result.username })
+
+  handleSearchChange = (e, { value }) => {
+    this.setState({ isLoading: true, value })
+
+    setTimeout(() => {
+      if (this.state.value.length < 1) return this.setState({isLoading: false, results:[], value: "" })
+
+      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+      const isMatch = (result) => re.test(result.username)
+      this.setState({
+        isLoading: false,
+        results: _.filter(this.state.users, isMatch),
+      })
+      console.log(this.state.results);
+    }, 300)
+  }
+
   getProPics = async (e) => {
 
       var pics= {}
@@ -138,9 +177,9 @@ class MainPage extends Component {
         //var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
         var res = await storageRef.listAll();
         for(var itemRef of res.items){
-          console.log("inside storage ref", user, itemRef.getDownloadURL());
+          // console.log("inside storage ref", user, itemRef.getDownloadURL());
           var url = await itemRef.getDownloadURL();
-          console.log("user is", user, url);
+          // console.log("user is", user, url);
           pics[user]=url;
 
         }
@@ -162,18 +201,18 @@ class MainPage extends Component {
   // Sign-out successful.
   }).catch(function(error) {
     alert(error.message)
-    console.log("fail");
+    // console.log("fail");
   // An error happened.
   });
   }
 
   uploadFunction = () => {
-    console.log('test');
+    // console.log('test');
     var uploader = document.getElementById('uploader');
-    console.log(uploader.value);
+    // console.log(uploader.value);
     var fileButton = document.getElementById('fileButton');
     var file = fileButton.files[0];
-    console.log(file);
+    // console.log(file);
     var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
     var task = storageRef.put(file); //upload file
     //update progress bar
@@ -205,7 +244,7 @@ class MainPage extends Component {
     // var show = document.getElementById('showPhoto'); //this is for photos
     // var show = document.getElementById('sampleMovie'); //this is for videos
     var show = this.rap.audio.current; //this is for audio
-    console.log(this.rap.audio);
+    // console.log(this.rap.audio);
     var fileButton = document.getElementById('fileButton');
     var file = fileButton.files[0];
     var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
@@ -215,7 +254,7 @@ class MainPage extends Component {
     }).catch(function(error){
       console.log(error);
     });
-    console.log(this.rap.audio);
+    // console.log(this.rap.audio);
   }
 
 
@@ -247,30 +286,30 @@ class MainPage extends Component {
     }
     }
   returnPicture(user){
-    console.log("in pro pic", this.state.profile_pics);
+    // console.log("in pro pic", this.state.profile_pics);
     if(this.state.profile_pics[user]){
-      console.log("in pro pic", this.state.profile_pics);
+      // console.log("in pro pic", this.state.profile_pics);
       return this.state.profile_pics[user];
     }
   }
-  searchFunction(event){
-    //prevents the page from re-loading
-    event.preventDefault();
-    //input of search box
-    let name = event.currentTarget.searchValue.value;
-
-    db.ref('users/'+name).on('value',function(snapshot) {
-      var username = snapshot.val();
-      console.log(username);
-      if (username == null){  //user not found
-        alert("User does not exist!");
-      }
-      else {  //user found
-        alert("User found");
-        //will set up a link to direct individual to porfolio
-      }
-    });
-  }
+  // searchFunction(event){
+  //   //prevents the page from re-loading
+  //   event.preventDefault();
+  //   //input of search box
+  //   let name = event.currentTarget.searchValue.value;
+  //
+  //   db.ref('users/'+name).on('value',function(snapshot) {
+  //     var username = snapshot.val();
+  //     console.log(username);
+  //     if (username == null){  //user not found
+  //       alert("User does not exist!");
+  //     }
+  //     else {  //user found
+  //       alert("User found");
+  //       //will set up a link to direct individual to porfolio
+  //     }
+  //   });
+  // }
 
 
   // replace either of these on the line where <AudioPlayer pref...> around 197
@@ -295,6 +334,7 @@ class MainPage extends Component {
     const extra = (
       <ModalExampleControlled />
     )
+
     const {users} = this.state;
 
     return (
@@ -312,6 +352,17 @@ class MainPage extends Component {
             <Button type='submit' onClick={this.submitFunction} basic color='teal'style={{width:100, height:50}}>Log Out</Button>
           </div>
           <HeaderApp />
+        </div>
+        <div className="searchBar" container sytle = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
+        <Search
+          loading={this.state.isLoading}
+          onResultSelect={this.handleResultSelect}
+          onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true, })}
+          results={this.state.results}
+          value={this.state.value}
+          const props =
+          {...this.props.results}
+        />
         </div>
 
         <div>
