@@ -323,6 +323,7 @@ class MainPage extends Component {
               display: 'flex',
               justifyContent: 'center'
             }} >
+
             <Card
 
               image={this.state.profile_pics[user]}
