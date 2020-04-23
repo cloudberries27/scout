@@ -1,26 +1,7 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import {
-  Button,
-  Segment,
-  Divider,
-  Tab,
-  Table,
-  Message,
-  Checkbox,
-  Form,
-  Icon,
-  Input,
-  Header,
-  Dropdown,
-  Dimmer,
-  Loader,
-  Label,
-  Progress
-} from "semantic-ui-react";
-import HeaderApp from '../Header';
-import { withRouter, Link } from 'react-router-dom';
-import {auth, db, storage} from '../config';
+import { Button, Segment, Divider, Tab, Message, Form, Icon, Header, Progress } from "semantic-ui-react";
+import { Link } from 'react-router-dom';
+import {auth, storage} from '../config';
 
 export default class Upload extends Component {
   constructor(props) {
@@ -29,7 +10,6 @@ export default class Upload extends Component {
       file: null,
       fileName: "",
       isUploading: false,
-      statusCode: "",
       progressPercentage:0
     };
     this.fileUpload = this.fileUpload.bind(this);
@@ -54,19 +34,11 @@ export default class Upload extends Component {
 
   fileChange = e => {
     this.setState(
-      { file: e.target.files[0], fileName: e.target.files[0].name },
-      () => {
-        console.log(
-          "File chosen --->",
-          this.state.file,
-          console.log("File name  --->", this.state.fileName)
-        );
-      }
+      { file: e.target.files[0], fileName: e.target.files[0].name }
     );
   };
 
   render() {
-    const { statusCode } = this.state;
     const panes = [
       {
 

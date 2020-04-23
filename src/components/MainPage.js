@@ -2,16 +2,10 @@ import React, { Component} from 'react';
 import PropTypes from 'prop-types'
 import HeaderApp from '../Header';
 import _ from 'lodash'
-import { Button, Icon, Card, Modal, Header, Segment, Grid, Search, Label} from 'semantic-ui-react';
+import { Button, Icon, Card, Modal, Header, Segment, Grid, Search} from 'semantic-ui-react';
 import { withRouter, Link } from 'react-router-dom';
-import picture from '../images/artist1.jpg';
-import picture2 from '../images/artist2.png';
-import picture3 from '../images/artist3.jpg';
 import autoBind from 'react-autobind';
 import {auth, db, storage} from '../config';
-import AudioPlayer from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
-import SearchBar from './Search';
 
 
 //this is gonna need to contain the information about the user
@@ -44,8 +38,6 @@ class SearchBarComponent extends Component {
 
 
   handleSearchChange = (e, { value }) => {
-    console.log("props!!!!", this.props.users)
-
     this.setState({ isLoading: true, value })
 
     setTimeout(() => {
@@ -59,7 +51,6 @@ class SearchBarComponent extends Component {
         results: _.filter(this.props.users, isMatch),
 
       })
-      console.log("result is", this.state.results)
     }, 300)
   }
 
@@ -164,13 +155,13 @@ class MainPage extends Component {
           users: usernames
         });
         for(user of Object.keys(that.state.users)){
-          if(that.state.users[user]['email']==auth.currentUser.email){
+          if(that.state.users[user]['email']===auth.currentUser.email){
             that.setState({currentUser: user})
           }
           that.state.usernames.push({"username":user});
           for(attr of Object.keys(that.state.users[user])){
-            if(attr=='type'){
-              if (that.state.users[user]['type']==1){
+            if(attr==='type'){
+              if (that.state.users[user]['type']===1){
                 that.state.users[user]['type']='Scout';
               }
               else{
@@ -192,29 +183,12 @@ class MainPage extends Component {
         //var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
         var res = await storageRef.listAll();
         for(var itemRef of res.items){
-          console.log("inside storage ref", user, itemRef.getDownloadURL());
           var url = await itemRef.getDownloadURL();
-          console.log("user is", user, url);
           pics[user]=url;
         }
         this.setState({profile_pics:pics});
     }
      await  this.wait(500);
-  }
-
-
-  async downloadFunction() {
-    var show = this.rap.audio.current; //this is for audio
-    // console.log(this.rap.audio);
-    var fileButton = document.getElementById('fileButton');
-    var file = fileButton.files[0];
-    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
-    show.src = await storageRef.getDownloadURL().then((result) => {
-        show.src = result;
-        return result;
-    }).catch(function(error){
-      console.log(error);
-    });
   }
 
   setRedirect = () => {
@@ -226,8 +200,8 @@ class MainPage extends Component {
     var attr;
     if(this.state.users[user]){
       for(attr of Object.keys(this.state.users[user])){
-        if(attr=='type'){
-          if (this.state.users[user]['type']==1){
+        if(attr==='type'){
+          if (this.state.users[user]['type']===1){
             return 'Scout';
           }
           else{
@@ -247,12 +221,11 @@ class MainPage extends Component {
     auth.onAuthStateChanged(function(user) {
     if (user) {
         //signed in
-
     } else {
 
-    }
-  }
-);
+        }
+      }
+    );
 
     const extra = (
       <ModalExampleControlled />

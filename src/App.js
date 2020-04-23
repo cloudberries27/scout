@@ -8,9 +8,7 @@ import MakeAccount from './components/MakeAccount';
 import MainPage from './components/MainPage';
 import Upload from './components/Upload';
 import UserPage from './components/Profiles/UserPage';
-import UserPage2 from './components/Profiles/UserPage2';
-import UserPage3 from './components/Profiles/UserPage3';
-import {auth, db, storage} from './config';
+import {auth, db} from './config';
 import autoBind from 'react-autobind';
 
 
@@ -69,7 +67,6 @@ class App extends Component {
 
   }
   returnData(){
-    console.log("in return", this.state.users[0]);
   }
   //var users = await data.getUsers();
 
@@ -80,7 +77,6 @@ render(){
     <Wrapper>
       <HashRouter>
         <Layout>
-          {console.log("test", this.state.users)}
           <Switch>
 
             {

@@ -32,7 +32,6 @@ class Login extends React.Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
   setRedirect = () => {
-    console.log("hello>");
     return <Link to="/login" />
   }
 
@@ -43,7 +42,6 @@ class Login extends React.Component {
         this.props.history.push('/mainpage');
       }
       else {
-        console.log('signed out');
         //user is signed out
       }
     });

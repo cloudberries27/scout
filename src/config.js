@@ -1,8 +1,5 @@
 import * as firebase from 'firebase';
 
-
-
-
 // scout's Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDPwe1ORI1Orf3A3dNY9NPzZEDmbMc1Va4",
@@ -20,23 +17,4 @@ import * as firebase from 'firebase';
   const db = firebase.database();
   const storage = firebase.storage();
 
-
-  // class Firebase{
-  //   constructor()
-  //   {
-  //     firebase.initializeApp(firebaseConfig);
-  //     this.auth = firebase.auth();
-  //   }
-  // }
-
 export {auth, db, storage, firebase}
-
-  // Initialize Firebase
-  // firebase.initializeApp(firebaseConfig);
-  // var database = firebase.database();
-  // const auth = firebase.auth();  //firebase authentication
-
- //  firebase.database().ref('users/' + 'nvaidyamath').set({  //firebase test
- //   username: 'nvaidyamath',
- //   email: 'nikhilcv16@yahoo.com'
- // });

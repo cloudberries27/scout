@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Header, Form, Icon, Button } from 'semantic-ui-react'
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import autoBind from 'react-autobind';
 import * as firebase from '../config';
 

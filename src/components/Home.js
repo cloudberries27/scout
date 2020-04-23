@@ -17,7 +17,6 @@ class Home extends React.Component {
 
   }
   setRedirect = () => {
-    console.log("hello?");
     this.props.history.push('/login');
   }
 

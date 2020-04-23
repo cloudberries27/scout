@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
-import { Header, Menu, Button,
-  Icon, Image, Divider,
-   Segment, Item, Container,
-   Transition
- } from 'semantic-ui-react'
+import { Header, Menu, Button, Icon, Image, Divider, Segment, Item, Container, Transition } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
-import Tabs from '../Tabs/Tabs';
-import profile from '../../images/artist1.jpg';
 import autoBind from 'react-autobind';
 import {auth, db, storage} from '../../config.js';
 import ReactAudioPlayer from 'react-audio-player';
 import ReactPlayer from 'react-player'
 import '../../stylesheets/userpage.css';
-
-
-
 
 class MenuCompact extends Component {
   constructor(props) {
@@ -154,7 +145,7 @@ export default class UserPage extends Component {
     </Button>
     auth.onAuthStateChanged(async (user) => {
       if (user) {
-        if(this.state.userData['email'] == user.email){ //if its the user's profile, the user will be allowed to upload
+        if(this.state.userData['email'] === user.email){ //if its the user's profile, the user will be allowed to upload
           component=
           <div>
           <Link to='/upload' style={{ color: 'lightseagreen' }} >
@@ -180,10 +171,10 @@ export default class UserPage extends Component {
       db.ref('users/').on('value',function(snapshot) {
          usernames = snapshot.val();
          for(user of Object.keys(usernames)){
-           if(user== that.props.username){
+           if(user=== that.props.username){
 
              that.setState({userData: usernames[user]});
-             if(usernames[user]['type']==1){
+             if(usernames[user]['type']===1){
                that.state.userData['type']='Scout';
              }
              else{
@@ -207,18 +198,18 @@ export default class UserPage extends Component {
       for (var itemRef of res.items) {
          var metadata = await itemRef.getMetadata()
 
-          if (metadata["contentType"] == "audio/mpeg" || metadata["contentType"] == "audio/mp3"){ //parse music
+          if (metadata["contentType"] === "audio/mpeg" || metadata["contentType"] === "audio/mp3"){ //parse music
 
             var url = await itemRef.getDownloadURL()
             audioGallery.push(url);
 
           } //parse video
-          if (metadata["contentType"] == "video/quicktime" || metadata["contentType"] == "video/mov" || metadata["contentType"] == "video/mp4"){
+          if (metadata["contentType"] === "video/quicktime" || metadata["contentType"] === "video/mov" || metadata["contentType"] === "video/mp4"){
             var url = await itemRef.getDownloadURL()
             videoGallery.push(url);
 
           }  //parse image
-          if (metadata["contentType"] == "image/jpeg"){
+          if (metadata["contentType"] === "image/jpeg"){
            var url = await itemRef.getDownloadURL()
             photoGallery.push(url);
 
@@ -270,11 +261,10 @@ export default class UserPage extends Component {
   }
 
 
-
   render() {
     var url = window.location.href;
     var thisUser = url.lastIndexOf('/')
-    if(url.substring(thisUser) == ("/" + this.state.userData['username']))
+    if(url.substring(thisUser) === ("/" + this.state.userData['username']))
     {
       this.state.sameUser = true;
       this.state.display = "Upload";
