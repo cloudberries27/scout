@@ -174,6 +174,16 @@ class MainPage extends Component {
     }
     await this.wait(500);
  }
+ submitFunction = () => {
+    auth.signOut().then(() => {
+      this.props.history.push('Login')
+  // Sign-out successful.
+  }).catch(function(error) {
+    alert(error.message)
+    console.log("fail");
+  // An error happened.
+  });
+  }
 
   getProPics = async (e) => {
     var pics={}
@@ -241,6 +251,7 @@ class MainPage extends Component {
             placeContent: 'end space-between'
           }}>
             <Profile user={this.state.currentUser}/>
+
             <Button type='submit' onClick={this.submitFunction} basic color='teal'style={{width:100, height:50}}>Log Out</Button>
           </div>
           <HeaderApp />
