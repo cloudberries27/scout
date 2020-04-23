@@ -57,7 +57,7 @@ export default class Login extends React.Component {
 
   handleBlur = (field) => (evt) => {this.setState({ touched: { ...this.state.touched, [field]: true }, }); }
 
-  test = () => console.log("test");
+
 
   async handleSubmit() {
     var uniqueUsername = true;
@@ -82,7 +82,7 @@ export default class Login extends React.Component {
         return;
     }
     else {
-
+      //sets up authentication
       firebase.auth.createUserWithEmailAndPassword(this.state.email,this.state.password).catch(function(error) {    //create authentication
       var errorMessage = error.message;
       if (errorMessage != null) {
@@ -124,13 +124,7 @@ export default class Login extends React.Component {
     this.setState(  { file: e.target.files[0], fileName: e.target.files[0].name });
 
   };
-  componentDidMount() {
 
-  }
-
-  componentWillUnmount() {
-
-  }
 
   canBeSubmitted(){
     const errors = this.validate;

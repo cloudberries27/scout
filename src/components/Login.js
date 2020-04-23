@@ -15,8 +15,7 @@ class Login extends React.Component {
     };
   }
 
-  handleSubmit = () => {
-
+  handleSubmit = () => { //login
     auth.signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
       var errorMessage = error.message;
       console.log(errorMessage);
@@ -24,22 +23,11 @@ class Login extends React.Component {
         alert(errorMessage);
         return;
       }
-      else {
-        alert("hello");
-        console.log("hello")
-      }
+      return;
       });
-
   }
 
 
-  componentDidMount() {
-
-  }
-
-  componentWillUnmount() {
-
-  }
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
@@ -50,16 +38,15 @@ class Login extends React.Component {
 
   render() {
     auth.onAuthStateChanged(user => {
-          console.log(user);
-          if (user) {
-            // alert('success sign in');
-            this.props.history.push('/mainpage');
-          }
-          else {
-            console.log('signed out');
-            //this.props.history.push('/');
-          }
-      });
+      if (user) {
+        //user is signed in
+        this.props.history.push('/mainpage');
+      }
+      else {
+        console.log('signed out');
+        //user is signed out
+      }
+    });
     return (
       <div id="wrapper"
       style = {{

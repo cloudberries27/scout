@@ -43,9 +43,8 @@ export default class Upload extends Component {
     var task = storageRef.put(this.state.file); //upload file
     //update progress bar
     task.on('state_changed',
-       (snapshot) => {
+       (snapshot) => {  //percentage denotes progress of file upload
         var percentage = Number(((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(2));
-        console.log("this progress",percentage)
         this.setState({progressPercentage: percentage });
       },
       function error(err){ },
@@ -126,6 +125,5 @@ export default class Upload extends Component {
     );
   }
 }
-
 // const rootElement = document.getElementById("root");
 // ReactDOM.render(<Upload />, rootElement);
