@@ -209,7 +209,7 @@ export default class UserPage extends Component {
             videoGallery.push(url);
 
           }  //parse image
-          if (metadata["contentType"] === "image/jpeg"){
+          if (metadata["contentType"] === "image/jpeg" || metadata["contentType"] === "image/png"){
            var url = await itemRef.getDownloadURL()
             photoGallery.push(url);
 
