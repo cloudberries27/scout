@@ -161,11 +161,14 @@ class MainPage extends Component {
           that.state.usernames.push({"username":user});
           for(attr of Object.keys(that.state.users[user])){
             if(attr==='type'){
-              if (that.state.users[user]['type']===1){
+              if (that.state.users[user]['type']==1){
                 that.state.users[user]['type']='Scout';
               }
-              else{
+              else if (that.state.users[user]['type']==2){
                 that.state.users[user]['type']='Recruiter';
+              }
+              else if (that.state.users[user]['type']==3){
+                that.state.users[user]['type']='Both';
               }
             }
           }
