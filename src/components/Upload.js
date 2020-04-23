@@ -11,12 +11,15 @@ import {
   Form,
   Icon,
   Input,
+  Header,
   Dropdown,
   Dimmer,
   Loader,
   Label,
   Progress
 } from "semantic-ui-react";
+import HeaderApp from '../Header';
+import { withRouter, Link } from 'react-router-dom';
 import {auth, db, storage} from '../config';
 
 export default class Upload extends Component {
@@ -35,6 +38,7 @@ export default class Upload extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
   async fileUpload() {
+
     var storageRef = storage.ref('files/'+auth.currentUser.email+'/gallery/'+this.state.fileName); //create storageRef
     var task = storageRef.put(this.state.file); //upload file
     //update progress bar
@@ -68,6 +72,8 @@ export default class Upload extends Component {
       {
 
         render: () => (
+          <div>
+
           <Tab.Pane attached={false}>
             <Message style={{textAlign:'center'}}>Make your profile more interesting. Show what you got!</Message>
             <Form onSubmit={this.fileUpload}>
@@ -103,11 +109,17 @@ export default class Upload extends Component {
               </Form.Field>
             </Form>
           </Tab.Pane>
+          </div>
         )
       }
     ];
     return (
+
       <Segment style={{ padding: "5em 1em" }} vertical>
+        <Header as='h4' size='huge' color='teal' icon textAlign='center'>
+            <Icon name='search'  circular />
+            <Link to='/mainpage' style={{ color: 'lightseagreen' }} ><Header.Content color='teal'>Scout</Header.Content></Link>
+        </Header>
         <Divider horizontal>UPLOAD PICTURES, AUDIOS AND VIDEOS!</Divider>
         <Tab menu={{ pointing: true }} panes={panes} />
       </Segment>
@@ -115,5 +127,5 @@ export default class Upload extends Component {
   }
 }
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(<Upload />, rootElement);
+// const rootElement = document.getElementById("root");
+// ReactDOM.render(<Upload />, rootElement);

@@ -121,6 +121,7 @@ export default class UserPage extends Component {
       sameUser: false,
       follows: false,
       display:'Follow',
+      follow:'Follow',
       audioVisible : false,
       photoVisible: false,
       videoVisible: false,
@@ -128,7 +129,8 @@ export default class UserPage extends Component {
       photoGallery : [],
       videoGallery: [],
       userData:{},
-      profile_pic:''
+      profile_pic:'',
+      button:''
     };
 
   }
@@ -139,8 +141,10 @@ export default class UserPage extends Component {
         await this.getAllData();
         await this.getUserData();
         await this.getProPics();
+        await this.getButton();
       }
     })
+
   }
   getProPics = async (e) => {
 
@@ -168,6 +172,36 @@ export default class UserPage extends Component {
   }
   wait(ms) {
   return new Promise(r => setTimeout(r, ms));
+  }
+  getButton = async (e) =>{
+    console.log("in button follow is", this.state.follow);
+    var component = <Button basic color='teal' onClick={this.handleFollow}>
+    {this.state.follow}
+    </Button>
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        console.log("found it!!", user)
+
+        if(this.state.userData['email'] == user.email){
+          component=
+          <div>
+          <Link to='/upload' style={{ color: 'lightseagreen' }} >
+          <Button basic color='teal' >
+          Upload
+          </Button>
+          </Link>
+
+          </div>
+        }
+
+      }
+    })
+    await this.wait(600);
+    this.setState({button:component});
+
+
+
+
   }
   getUserData = async (e) => {
     var that = this;
@@ -237,8 +271,10 @@ export default class UserPage extends Component {
   handleFollow(){
     //Nikhil here goes your code
     const status= this.state.follows;
-    this.setState({follows:true, display:'Following',});
+    this.setState({follows:true, follow:'Following',});
+    console.log("follow", this.state.follow);
     this.setState((prevState) => ({ audioVisible: !prevState.audioVisible }));
+    this.getButton();
 
   }
   handleUpload(){
@@ -276,6 +312,9 @@ export default class UserPage extends Component {
   getType(){
     return this.state.userData['type'];
   }
+
+
+
   render() {
     console.log(window.location.href);
     var url = window.location.href;
@@ -295,6 +334,7 @@ export default class UserPage extends Component {
 
     }
 
+
     return (
         <div>
             <Header as='h4' size='huge' color='teal' icon textAlign='center'>
@@ -302,9 +342,13 @@ export default class UserPage extends Component {
                 <Link to='/mainpage' style={{ color: 'lightseagreen' }} ><Header.Content color='teal'>Scout</Header.Content></Link>
             </Header>
 
-
             <Segment raised>
+<<<<<<< HEAD
             {displayButton}
+=======
+            {this.state.button}
+
+>>>>>>> master
             <div className='header'>
             <Image src={this.state.profile_pic} size='medium' circular />
 
