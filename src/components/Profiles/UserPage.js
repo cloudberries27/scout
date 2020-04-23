@@ -27,34 +27,15 @@ class MenuCompact extends Component {
   }
 
   handleItemClick = (e, { name }) =>{
-    //console.log(this.props.audioSegment);
-
-
-
-    // createUrl = storageRef.getDownloadURL().then((url) => {
-    //     console.log(url);
-    //
-    // }).catch(function(error){
-    //   console.log(error);
-    // });
-
-    var file;
-    // for (file = 0; file < listRef.length, file++){
-    //   console.log(file);
-    // }
     this.props.onAudio();
     this.setState({ activeItem: name });
   }
 
   handleItemClickPhoto = (e, { name }) =>{
-    //console.log(this.props.audioSegment);
-
     this.props.onPhoto();
     this.setState({ activeItem: name });
   }
   handleItemClickVideo = (e, { name }) =>{
-    //console.log(this.props.audioSegment);
-
     this.props.onVideo();
     this.setState({ activeItem: name });
   }
@@ -110,6 +91,7 @@ export default class UserPage extends Component {
       gender: "",
       type: "",
       experience: "",
+      profession: "",
       agreement: false,
       touched: {
         username: false,
@@ -146,26 +128,18 @@ export default class UserPage extends Component {
     })
 
   }
-  getProPics = async (e) => {
+  getProPics = async (e) => { //retrieves profile picsc
 
     if (auth.currentUser){
       var pic;
       var user;
 
       var storageRef = storage.ref().child('files/'+this.state.userData['email']+'/profilepics');
-      //var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
       var res = await storageRef.listAll();
       for(var itemRef of res.items){
-        console.log("inside storage ref", user, itemRef.getDownloadURL());
         var url = await itemRef.getDownloadURL();
-        console.log("user is", user, url);
         pic=url;
-
-
-
       }
-
-
       this.setState({profile_pic:pic});
     }
 
@@ -174,15 +148,13 @@ export default class UserPage extends Component {
   return new Promise(r => setTimeout(r, ms));
   }
   getButton = async (e) =>{
-    console.log("in button follow is", this.state.follow);
+
     var component = <Button basic color='teal' onClick={this.handleFollow}>
     {this.state.follow}
     </Button>
     auth.onAuthStateChanged(async (user) => {
       if (user) {
-        console.log("found it!!", user)
-
-        if(this.state.userData['email'] == user.email){
+        if(this.state.userData['email'] == user.email){ //if its the user's profile, the user will be allowed to upload
           component=
           <div>
           <Link to='/upload' style={{ color: 'lightseagreen' }} >
@@ -199,15 +171,11 @@ export default class UserPage extends Component {
     await this.wait(600);
     this.setState({button:component});
 
-
-
-
   }
   getUserData = async (e) => {
     var that = this;
     var usernames={};
     var user;
-    console.log("props are: ", this.props.username);
     if (auth.currentUser){
       db.ref('users/').on('value',function(snapshot) {
          usernames = snapshot.val();
@@ -222,9 +190,7 @@ export default class UserPage extends Component {
                that.state.userData['type']='Recruiter';
              }
            }
-
          }
-         console.log("inside get data", that.state.userData);
       });
       }
       await this.wait(500);
@@ -241,17 +207,17 @@ export default class UserPage extends Component {
       for (var itemRef of res.items) {
          var metadata = await itemRef.getMetadata()
 
-          if (metadata["contentType"] == "audio/mpeg" || metadata["contentType"] == "audio/mp3"){
+          if (metadata["contentType"] == "audio/mpeg" || metadata["contentType"] == "audio/mp3"){ //parse music
 
             var url = await itemRef.getDownloadURL()
             audioGallery.push(url);
 
-          }
-          if (metadata["contentType"] == "video/quicktime" || metadata["contentType"] == "video/mov"){
+          } //parse video
+          if (metadata["contentType"] == "video/quicktime" || metadata["contentType"] == "video/mov" || metadata["contentType"] == "video/mp4"){
             var url = await itemRef.getDownloadURL()
             videoGallery.push(url);
 
-          }
+          }  //parse image
           if (metadata["contentType"] == "image/jpeg"){
            var url = await itemRef.getDownloadURL()
             photoGallery.push(url);
@@ -261,35 +227,26 @@ export default class UserPage extends Component {
         this.setState({audioGallery: audioGallery });
         this.setState({photoGallery: photoGallery });
         this.setState({videoGallery: videoGallery });
-        console.log("inside get data", this.state);
-        console.log("inside get data", this.state.user);
-
-
     }
 
   }
   handleFollow(){
-    //Nikhil here goes your code
     const status= this.state.follows;
     this.setState({follows:true, follow:'Following',});
-    console.log("follow", this.state.follow);
     this.setState((prevState) => ({ audioVisible: !prevState.audioVisible }));
     this.getButton();
 
   }
-  handleUpload(){
-    console.log("yeet");
-  }
+
   toggleVisibility(){
-    //console.log(this.state.visible);
-      this.setState({photoVisible:false});
+    this.setState({photoVisible:false});
     if (this.state.videoVisible){
       this.setState({videoVisible:false});
     }
     this.setState((prevState) => ({ audioVisible: !prevState.audioVisible }));
   }
   toggleVisibilityPhoto(){
-    //console.log(this.state.visible);
+
     if (this.state.audioVisible){
       this.setState({audioVisible:false});
     }
@@ -300,7 +257,6 @@ export default class UserPage extends Component {
 
   }
   toggleVisibilityVideo(){
-    //console.log(this.state.visible);
     if (this.state.audioVisible){
       this.setState({audioVisible:false});
     }
@@ -316,7 +272,6 @@ export default class UserPage extends Component {
 
 
   render() {
-    console.log(window.location.href);
     var url = window.location.href;
     var thisUser = url.lastIndexOf('/')
     if(url.substring(thisUser) == ("/" + this.state.userData['username']))
@@ -348,7 +303,7 @@ export default class UserPage extends Component {
               <Item.Content>
                 <br/>
                 <Item.Description style={{fontSize:'large'}}>
-                Artist
+                 {this.state.userData['profession']}
                 </Item.Description>
               </Item.Content>
 
@@ -410,6 +365,3 @@ export default class UserPage extends Component {
     )
   }
 }
-// <img id='showPhoto'/> this is for images
-  // <video id="sampleMovie" width="640" height="360" preload controls></video> this is for videos
-  // <AudioPlayer ref={(element) => {this.rap = element;}} />
