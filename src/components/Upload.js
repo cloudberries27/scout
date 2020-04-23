@@ -73,10 +73,7 @@ export default class Upload extends Component {
 
         render: () => (
           <div>
-          <Header as='h4' size='huge' color='teal' icon textAlign='center'>
-              <Icon name='search'  circular />
-              <Link to='/mainpage' style={{ color: 'lightseagreen' }} ><Header.Content color='teal'>Scout</Header.Content></Link>
-          </Header>
+
           <Tab.Pane attached={false}>
             <Message style={{textAlign:'center'}}>Make your profile more interesting. Show what you got!</Message>
             <Form onSubmit={this.fileUpload}>
@@ -117,7 +114,12 @@ export default class Upload extends Component {
       }
     ];
     return (
+
       <Segment style={{ padding: "5em 1em" }} vertical>
+        <Header as='h4' size='huge' color='teal' icon textAlign='center'>
+            <Icon name='search'  circular />
+            <Link to='/mainpage' style={{ color: 'lightseagreen' }} ><Header.Content color='teal'>Scout</Header.Content></Link>
+        </Header>
         <Divider horizontal>UPLOAD PICTURES, AUDIOS AND VIDEOS!</Divider>
         <Tab menu={{ pointing: true }} panes={panes} />
       </Segment>
