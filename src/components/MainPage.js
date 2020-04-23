@@ -1,6 +1,7 @@
 import React, { Component} from 'react';
 import HeaderApp from '../Header';
-import { Button, Icon, Card, Modal, Header, Segment} from 'semantic-ui-react';
+import _ from 'lodash'
+import { Button, Icon, Card, Modal, Header, Segment, Grid, Search} from 'semantic-ui-react';
 import { withRouter, Link } from 'react-router-dom';
 import picture from '../images/artist1.jpg';
 import picture2 from '../images/artist2.png';
@@ -15,7 +16,6 @@ import SearchBar from './Search';
 //this is gonna need to contain the information about the user
 const square = { width: 55, height: 35, color: 'teal' }
 const Profile = (props) => (
-
   <div>
   <Link to={'/'+props.user}>
     <Segment circular style={square}>
@@ -27,6 +27,45 @@ const Profile = (props) => (
   </div>
 )
 
+class SearchBarComponent extends Component {
+
+  state = {isLoading: false, results:[], value:""}
+  handleResultSelect = (e, { result }) => this.setState({ value: result.username })
+
+  handleSearchChange = (e, { value }) => {
+    this.setState({ isLoading: true, value })
+
+    setTimeout(() => {
+      if (this.state.value.length < 1) return this.setState({isLoading: false, results:[], value: "" })
+
+      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+      const isMatch = (result) => re.test(result.username)
+      this.setState({
+        isLoading: false,
+        results: _.filter(this.state.users, isMatch),
+      })
+    }, 300)
+  }
+
+  render()
+  {
+    return (
+  <div className="searchBar" container sytle = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
+  <Search
+    loading={this.state.isLoading}
+    onResultSelect={this.handleResultSelect}
+    onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true, })}
+    results={this.state.results}
+    value={this.state.value}
+    {...this.props}
+  />
+  </div>
+)
+}
+
+
+}
+
 class ModalExampleControlled extends Component {
 
   state = { modalOpen: false}
@@ -34,15 +73,6 @@ class ModalExampleControlled extends Component {
   handleOpen = () => this.setState({ modalOpen: true })
 
   handleClose = () => this.setState({ modalOpen: false })
-
-//   const Player = () => (
-//   <AudioPlayer
-//     autoPlay
-//     src="http://example.com/audio.mp3"
-//     onPlay={e => console.log("onPlay")}
-//     // other props here
-//   />
-// );
 
   render() {
     return (
@@ -79,31 +109,15 @@ class MainPage extends Component {
       profile_pics: {},
       currentUser:''
     };
-
   }
 
   componentDidMount() {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await this.getUserData();
-        await this.getProPics();
-      }
-    })
-
-  }
-  wait(ms) {
-  return new Promise(r => setTimeout(r, ms));
-  }
-  getUserData = async (e) => {
     var that = this;
-    var usernames={};
+    var usernames='';
     var user;
     var attr;
-    console.log("props are: ", this.props.username);
-    if (auth.currentUser){
-      db.ref('users/').on('value',function(snapshot) {
+     db.ref('users/').on('value',function(snapshot) {
         usernames = snapshot.val();
-
         that.setState({
           users: usernames
         });
@@ -124,13 +138,16 @@ class MainPage extends Component {
             }
           }
         }
-      });
-      }
-      await this.wait(500);
-    }
+        that.getProPics();
+     });
+
+
+
+  }
 
   getProPics = async (e) => {
 
+    if (auth.currentUser){
       var pics= {}
       var user;
       for(user of Object.keys(this.state.users)){
@@ -138,21 +155,16 @@ class MainPage extends Component {
         //var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
         var res = await storageRef.listAll();
         for(var itemRef of res.items){
-          console.log("inside storage ref", user, itemRef.getDownloadURL());
+          // console.log("inside storage ref", user, itemRef.getDownloadURL());
           var url = await itemRef.getDownloadURL();
-          console.log("user is", user, url);
+          // console.log("user is", user, url);
           pics[user]=url;
 
         }
-
-
       }
 
-
       this.setState({profile_pics:pics});
-
-    await  this.wait(500);
-
+    }
   }
 
   submitFunction = () => {
@@ -162,18 +174,18 @@ class MainPage extends Component {
   // Sign-out successful.
   }).catch(function(error) {
     alert(error.message)
-    console.log("fail");
+    // console.log("fail");
   // An error happened.
   });
   }
 
   uploadFunction = () => {
-    console.log('test');
+    // console.log('test');
     var uploader = document.getElementById('uploader');
-    console.log(uploader.value);
+    // console.log(uploader.value);
     var fileButton = document.getElementById('fileButton');
     var file = fileButton.files[0];
-    console.log(file);
+    // console.log(file);
     var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
     var task = storageRef.put(file); //upload file
     //update progress bar
@@ -191,21 +203,11 @@ class MainPage extends Component {
       }); //hi
   }
 
-  // playAudio = () =>{
-  //   var show = document.getElementById('audioClip');
-  //   show.play();
-  // }
-  //
-  // stopAudio = () =>{
-  //   var show = document.getElementById('audioClip');
-  //   show.pause();
-  // }
-
   async downloadFunction() {
     // var show = document.getElementById('showPhoto'); //this is for photos
     // var show = document.getElementById('sampleMovie'); //this is for videos
     var show = this.rap.audio.current; //this is for audio
-    console.log(this.rap.audio);
+    // console.log(this.rap.audio);
     var fileButton = document.getElementById('fileButton');
     var file = fileButton.files[0];
     var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
@@ -215,12 +217,8 @@ class MainPage extends Component {
     }).catch(function(error){
       console.log(error);
     });
-    console.log(this.rap.audio);
+    // console.log(this.rap.audio);
   }
-
-
-
-
 
   setRedirect = () => {
     // console.log("hello?");
@@ -247,37 +245,12 @@ class MainPage extends Component {
     }
     }
   returnPicture(user){
-    console.log("in pro pic", this.state.profile_pics);
+    // console.log("in pro pic", this.state.profile_pics);
     if(this.state.profile_pics[user]){
-      console.log("in pro pic", this.state.profile_pics);
+      // console.log("in pro pic", this.state.profile_pics);
       return this.state.profile_pics[user];
     }
   }
-  searchFunction(event){
-    //prevents the page from re-loading
-    event.preventDefault();
-    //input of search box
-    let name = event.currentTarget.searchValue.value;
-
-    db.ref('users/'+name).on('value',function(snapshot) {
-      var username = snapshot.val();
-      console.log(username);
-      if (username == null){  //user not found
-        alert("User does not exist!");
-      }
-      else {  //user found
-        alert("User found");
-        //will set up a link to direct individual to porfolio
-      }
-    });
-  }
-
-
-  // replace either of these on the line where <AudioPlayer pref...> around 197
-  // when doing any of them make sure to only have 1 type at once otherwise it gets messy
-  // <img id='showPhoto'/> this is for images
-  // <video id="sampleMovie" width="640" height="360" preload controls></video> this is for videos
-  // <AudioPlayer ref={(element) => {this.rap = element;}} />
 
   render() {
     auth.onAuthStateChanged(function(user) {
@@ -287,18 +260,15 @@ class MainPage extends Component {
     } else {
       console.log("no");
     }
-
   }
-
 );
 
     const extra = (
       <ModalExampleControlled />
     )
+
     const {users} = this.state;
-
     return (
-
 
       <div id="wrapper">
         <div id="up" >
@@ -307,9 +277,8 @@ class MainPage extends Component {
             display: 'flex',
             placeContent: 'end space-between'
           }}>
-
             <Profile user={this.state.currentUser}/>
-            <Button type='submit' onClick={this.submitFunction} basic color='teal'style={{width:100, height:50}}>Log Out</Button>
+            <Button type='submit' onClick={this.submitFunction}>Log Out</Button>
           </div>
           <HeaderApp />
         </div>
