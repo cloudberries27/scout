@@ -146,20 +146,15 @@ class MainPage extends Component {
   }
 
   getProPics = async (e) => {
-
     if (auth.currentUser){
       var pics= {}
       var user;
       for(user of Object.keys(this.state.users)){
         var storageRef = storage.ref().child('files/'+this.state.users[user]['email']+'/profilepics');
-        //var listRef = storage.ref().child('files/'+auth.currentUser.email+'/gallery'); //all user files
         var res = await storageRef.listAll();
         for(var itemRef of res.items){
-          // console.log("inside storage ref", user, itemRef.getDownloadURL());
           var url = await itemRef.getDownloadURL();
-          // console.log("user is", user, url);
           pics[user]=url;
-
         }
       }
 
@@ -170,42 +165,15 @@ class MainPage extends Component {
   submitFunction = () => {
     auth.signOut().then(() => {
       this.props.history.push('Login')
-
   // Sign-out successful.
-  }).catch(function(error) {
+    }).catch(function(error) {
     alert(error.message)
-    // console.log("fail");
   // An error happened.
-  });
+    });
   }
 
-  uploadFunction = () => {
-    // console.log('test');
-    var uploader = document.getElementById('uploader');
-    // console.log(uploader.value);
-    var fileButton = document.getElementById('fileButton');
-    var file = fileButton.files[0];
-    // console.log(file);
-    var storageRef = storage.ref('files/'+auth.currentUser.email+'/'+file.name); //create storageRef
-    var task = storageRef.put(file); //upload file
-    //update progress bar
-    task.on('state_changed',
-      function progress(snapshot){
-        var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        uploader.value = percentage;
-      },
-      function error(err){
-
-      },
-      function complete(){
-            // Create a reference to the file we want to download
-
-      }); //hi
-  }
 
   async downloadFunction() {
-    // var show = document.getElementById('showPhoto'); //this is for photos
-    // var show = document.getElementById('sampleMovie'); //this is for videos
     var show = this.rap.audio.current; //this is for audio
     // console.log(this.rap.audio);
     var fileButton = document.getElementById('fileButton');
@@ -217,22 +185,17 @@ class MainPage extends Component {
     }).catch(function(error){
       console.log(error);
     });
-    // console.log(this.rap.audio);
   }
 
   setRedirect = () => {
-    // console.log("hello?");
     this.props.history.push('/login');
   }
 
-  handleClick() {
 
-  }
   returnType(user){
     var attr;
     if(this.state.users[user]){
       for(attr of Object.keys(this.state.users[user])){
-        //console.log('in return', attr);
         if(attr=='type'){
           if (this.state.users[user]['type']==1){
             return 'Scout';
@@ -245,9 +208,7 @@ class MainPage extends Component {
     }
     }
   returnPicture(user){
-    // console.log("in pro pic", this.state.profile_pics);
     if(this.state.profile_pics[user]){
-      // console.log("in pro pic", this.state.profile_pics);
       return this.state.profile_pics[user];
     }
   }
@@ -255,10 +216,10 @@ class MainPage extends Component {
   render() {
     auth.onAuthStateChanged(function(user) {
     if (user) {
-
+        //signed in
 
     } else {
-      console.log("no");
+
     }
   }
 );
@@ -269,7 +230,6 @@ class MainPage extends Component {
 
     const {users} = this.state;
     return (
-
       <div id="wrapper">
         <div id="up" >
           <div className='right' container style = {{
@@ -284,7 +244,6 @@ class MainPage extends Component {
         </div>
 
         <div>
-        {console.log("outside", users)}
         {
           Object.keys(users).map(user =>
             <div className="col-3" container style = {{
@@ -293,7 +252,6 @@ class MainPage extends Component {
               justifyContent: 'center'
             }} >
             <Card
-
               image={this.state.profile_pics[user]}
               header= <Link to={'/'+user}>{users[user]['first_name'] +" " +users[user]['last_name']}</Link>
               meta={users[user]['type']}
