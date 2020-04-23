@@ -51,7 +51,7 @@ Also, be sure to have `git` available in your PATH, `npm` might need it.
 1. `git clone` your repo to local
 2. Run `npm install` for dependencies
 3. Start the dev server using `npm start`
-4. Open [http://localhost:8080](http://localhost:8080)
+4. Open [http://localhost:3000](http://localhost:3000)
 
 
 ## Make an Account:
