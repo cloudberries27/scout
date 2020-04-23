@@ -16,6 +16,7 @@ export default class Login extends React.Component {
       last_name: "",
       gender: "",
       type: "",
+      profession:"",
       experience: "",
       agreement: false,
       touched: {
@@ -41,6 +42,7 @@ export default class Login extends React.Component {
     username: this.state.username.length === 0,
     email: this.state.email.length === 0,
     password: this.state.password.length <= 7,
+    profession: this.state.profession.length ===0,
     first_name: this.state.first_name.length === 0,
     last_name: this.state.last_name.length === 0,
     gender: this.state.gender.length === 0,
@@ -98,7 +100,7 @@ export default class Login extends React.Component {
           last_name:this.state.last_name,
           gender:this.state.gender,
           type:this.state.type,
-          experience:this.state.experience
+          profession:this.state.profession
          });
        var storageRef = firebase.storage.ref('files/'+this.state.email+'/profilepics/'+this.state.fileName); //create storageRef
        var task = storageRef.put(this.state.file); //upload file
@@ -206,6 +208,14 @@ export default class Login extends React.Component {
                   onChange={this.handleChange.bind(this)}
                   error={shouldMarkError('last_name') && { content: 'Please enter your last name', pointing: 'above'}}
                 />
+                <Form.Input
+                  fluid label='Profession'
+                  placeholder='Profession'
+                  name = 'profession'
+                  onBlur={this.handleBlur("profession")}
+                  onChange={this.handleChange.bind(this)}
+                  error={shouldMarkError('profession') && { content: 'Please enter a profession', pointing: 'above'}}
+                />
               </Form.Group>
               <Form.Group widths='equal'>
                 <Form.Select
@@ -220,6 +230,7 @@ export default class Login extends React.Component {
                   onChange={this.handleChange.bind(this)}
                   error={shouldMarkError('gender') && { content: 'Please select a gender', pointing: 'above'}}
                 />
+
                 <Form.Select
                   label='Goal'
                   options={ [
@@ -230,7 +241,9 @@ export default class Login extends React.Component {
                   placeholder='What are you looking for?'
                   name='type'
                   onChange={this.handleChange.bind(this)}
+
                 />
+
               </Form.Group>
               <Form.TextArea
                   label='About'
