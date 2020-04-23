@@ -110,6 +110,7 @@ export default class UserPage extends Component {
       gender: "",
       type: "",
       experience: "",
+      profession: "",
       agreement: false,
       touched: {
         username: false,
@@ -247,7 +248,7 @@ export default class UserPage extends Component {
             audioGallery.push(url);
 
           }
-          if (metadata["contentType"] == "video/quicktime" || metadata["contentType"] == "video/mov"){
+          if (metadata["contentType"] == "video/quicktime" || metadata["contentType"] == "video/mov" || metadata["contentType"] == "video/mp4"){
             var url = await itemRef.getDownloadURL()
             videoGallery.push(url);
 
@@ -348,7 +349,7 @@ export default class UserPage extends Component {
               <Item.Content>
                 <br/>
                 <Item.Description style={{fontSize:'large'}}>
-                Artist
+                 {this.state.userData['profession']}
                 </Item.Description>
               </Item.Content>
 
