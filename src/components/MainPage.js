@@ -27,6 +27,45 @@ const Profile = (props) => (
   </div>
 )
 
+class SearchBarComponent extends Component {
+
+  state = {isLoading: false, results:[], value:""}
+  handleResultSelect = (e, { result }) => this.setState({ value: result.username })
+
+  handleSearchChange = (e, { value }) => {
+    this.setState({ isLoading: true, value })
+
+    setTimeout(() => {
+      if (this.state.value.length < 1) return this.setState({isLoading: false, results:[], value: "" })
+
+      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+      const isMatch = (result) => re.test(result.username)
+      this.setState({
+        isLoading: false,
+        results: _.filter(this.state.users, isMatch),
+      })
+    }, 300)
+  }
+
+  render()
+  {
+    return (
+  <div className="searchBar" container sytle = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
+  <Search
+    loading={this.state.isLoading}
+    onResultSelect={this.handleResultSelect}
+    onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true, })}
+    results={this.state.results}
+    value={this.state.value}
+    {...this.props}
+  />
+  </div>
+)
+}
+
+
+}
+
 class ModalExampleControlled extends Component {
 
   state = { modalOpen: false}
@@ -68,12 +107,7 @@ class MainPage extends Component {
     this.state = {
       users: {},
       profile_pics: {},
-      currentUser:'',
-      isLoading: false,
-      value: "",
-      results:[],
-      source: null,
-      first: true
+      currentUser:''
     };
   }
 
@@ -109,27 +143,6 @@ class MainPage extends Component {
 
 
 
-  }
-
-  handleResultSelect = (e, { result }) => this.setState({ value: result.username })
-
-  handleSearchChange = (e, { value }) => {
-    this.setState({ isLoading: true, value })
-
-    setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState({isLoading: false, results:[], value: "" })
-
-      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-      const isMatch = (result) => re.test(result.username)
-      this.setState({
-        isLoading: false,
-        results: _.filter(this.state.users, isMatch),
-      })
-      console.log(this.props.results);
-      console.log(this.props);
-      // console.log(results);
-      // this.props.results.push(this.state.results);
-    }, 300)
   }
 
   getProPics = async (e) => {
@@ -268,16 +281,6 @@ class MainPage extends Component {
             <Button type='submit' onClick={this.submitFunction}>Log Out</Button>
           </div>
           <HeaderApp />
-        </div>
-        <div className="searchBar" container sytle = {{marginTop: 30, display: 'flex', justifyContent: 'center'}}>
-        <Search
-          loading={this.state.isLoading}
-          onResultSelect={this.handleResultSelect}
-          onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true, })}
-          results={this.state.results}
-          value={this.state.value}
-          {...this.props}
-        />
         </div>
 
         <div>
