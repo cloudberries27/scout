@@ -172,6 +172,7 @@ export default class Login extends React.Component {
                   label=' Password'
                   name='password'
                   placeholder='Password'
+                  type="password"
                   onBlur={this.handleBlur("password")}
                   onChange={this.handleChange.bind(this)}
                   error={shouldMarkError('password') && {content: 'Please enter an 8 character password', pointing: 'above' }}
