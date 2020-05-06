@@ -155,7 +155,7 @@ class MainPage extends Component {
           users: usernames
         });
         for(user of Object.keys(that.state.users)){
-          if(that.state.users[user]['email']===auth.currentUser.email){
+          if(that.state.users[user] && that.state.users[user]['email']===auth.currentUser.email){
             that.setState({currentUser: user})
           }
           that.state.usernames.push({"username":user});
