@@ -100,6 +100,7 @@ export default class Login extends React.Component {
           last_name:this.state.last_name,
           gender:this.state.gender,
           type:this.state.type,
+          experience: this.state.experience,
           profession:this.state.profession
          });
        var storageRef = firebase.storage.ref('files/'+this.state.email+'/profilepics/'+this.state.fileName); //create storageRef
